@@ -1,6 +1,6 @@
-# laminas-i18n-filter
+# laminas-i18n-validator
 
-[![Build Status](https://github.com/laminas/laminas-i18n-filter/workflows/Continuous%20Integration/badge.svg)](https://github.com/laminas/laminas-i18n-filter/actions?query=workflow%3A"Continuous+Integration")
+[![Build Status](https://github.com/laminas/laminas-i18n-validator/workflows/Continuous%20Integration/badge.svg)](https://github.com/laminas/laminas-i18n-validator/actions?query=workflow%3A"Continuous+Integration")
 
 > ## 🇷🇺 Русским гражданам
 >
@@ -18,7 +18,7 @@
 >
 > You trust us enough to use our software. We ask that you trust us to say the truth on this. We need your help. Go out and protest this unnecessary war. Stop the bloodshed. Say "stop the war!"
 
-`Laminas\I18n\Filter` provides locale based filters compatible with [`Laminas\Filter`](https://docs.laminas.dev/laminas-filter/)
+`Laminas\I18n\Validator` provides locale based validator compatible with [`Laminas\Validator`](https://docs.laminas.dev/laminas-validator/)
 
-- File issues at https://github.com/laminas/laminas-i18n-filter/issues
+- File issues at https://github.com/laminas/laminas-i18n-validator/issues
 - Documentation is at https://docs.laminas.dev/laminas-i18n/
