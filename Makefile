@@ -103,32 +103,32 @@ docs-lint: .markdownlint.json ## Lint documentation
 
 set-baseline: ## Expand the Psalm baseline with current issues
 	@$(call MK_INFO,"Resetting the Psalm baseline")
-	@docker run $(DOCKER_PHP) vendor/bin/psalm --no-cache --set-baseline=psalm-baseline.xml
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/psalm --no-cache --set-baseline=psalm-baseline.xml
 .PHONY: set-baseline
 
 update-baseline: ## Remove resolved issues from the baseline
 	@$(call MK_INFO,"Updating the Psalm baseline")
-	@docker run $(DOCKER_PHP) vendor/bin/psalm --no-cache --update-baseline
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/psalm --no-cache --update-baseline
 .PHONY: update-baseline
 
 sa: ## Run static analysis
 	@$(call MK_INFO,"Running static analysis")
-	@docker run $(DOCKER_PHP) vendor/bin/psalm --no-cache
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/psalm --no-cache
 .PHONY: sa
 
 cs: ## Run coding standards checks
 	@$(call MK_INFO,"Checking coding standards")
-	@docker run $(DOCKER_PHP) vendor/bin/phpcs
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/phpcs
 .PHONY: cs
 
 cs-fix: ## Fix coding standards violations
 	@$(call MK_INFO,"Fixing coding standards violations")
-	@docker run $(DOCKER_PHP) vendor/bin/phpcbf
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/phpcbf
 .PHONY: cs-fix
 
 test: ## Run tests
 	@$(call MK_INFO,"Running Tests")
-	@docker run $(DOCKER_PHP) vendor/bin/phpunit
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off vendor/bin/phpunit
 .PHONY: test
 
 composer-checks: ## Dump the composer autoloader
@@ -139,7 +139,7 @@ composer-checks: ## Dump the composer autoloader
 
 composer-require-checker: ## Check for symbols from un-declared dependencies
 	@$(call MK_INFO,"Checking for undeclared dependencies")
-	@docker run $(DOCKER_PHP) tools/crc/vendor/bin/composer-require-checker check --config-file=tools/crc/config.json
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off tools/crc/vendor/bin/composer-require-checker check --config-file=tools/crc/config.json
 .PHONY: composer-require-checker
 
 mutants: ## Run mutation tests
@@ -152,17 +152,17 @@ mutants: ## Run mutation tests
 
 unused: ## Run composer-unused
 	@$(call MK_INFO,"Checking for unused dependencies")
-	@docker run $(DOCKER_PHP) tools/unused/vendor/bin/composer-unused
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off tools/unused/vendor/bin/composer-unused
 .PHONY: unused
 
 rector: ## Run Rector and show the diff
 	@$(call MK_INFO,"Checking for syntax consistency with rector")
-	@docker run $(DOCKER_PHP) tools/rector/vendor/bin/rector process --dry-run -c tools/rector/rector.php
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off tools/rector/vendor/bin/rector process --dry-run -c tools/rector/rector.php
 .PHONY: rector
 
 rector-fix: ## Apply Rector changes
 	@$(call MK_INFO,"Fixing syntax inconsistencies with rector")
-	@docker run $(DOCKER_PHP) tools/rector/vendor/bin/rector process -c tools/rector/rector.php
+	@docker run $(DOCKER_PHP) -dxdebug.mode=off tools/rector/vendor/bin/rector process -c tools/rector/rector.php
 .PHONY: rector-fix
 
 qa: composer-checks cs test sa composer-require-checker unused rector docs-lint ## Run all QA checks
