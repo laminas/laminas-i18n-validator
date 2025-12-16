@@ -189,9 +189,7 @@ final class DateTimeTest extends TestCase
     public function testThatInvalidFormatterOptionsCauseExceptions(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'datefmt_create: invalid date format style',
-        );
+        $this->expectExceptionMessage('invalid date format style');
 
         new DateTimeValidator([
             'locale'   => 'en',
