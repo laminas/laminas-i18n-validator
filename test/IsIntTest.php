@@ -4,166 +4,132 @@ declare(strict_types=1);
 
 namespace LaminasTest\I18n\Validator;
 
-use Laminas\I18n\Validator\IsInt as IsIntValidator;
-use Laminas\Validator\Exception;
-use LaminasTest\I18n\TestCase;
-use Locale;
+use Laminas\I18n\Validator\IsInt;
+use Laminas\Validator\Exception\InvalidArgumentException;
+use NumberFormatter;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+
+use function array_map;
+use function range;
+use function sprintf;
+use function str_repeat;
+
+use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 
 final class IsIntTest extends TestCase
 {
-    private IsIntValidator $validator;
-
-    protected function setUp(): void
+    public function testThatLocaleIsARequiredOption(): void
     {
-        parent::setUp();
-        $this->validator = new IsIntValidator();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The locale must be provided in the `locale` options key as a non-empty-string');
+
+        new IsInt([]);
     }
 
-    /** @return array<array-key, array{0: mixed, 1: bool}> */
+    /**
+     * @return list<array{
+     *     0: non-empty-string,
+     *     1: bool,
+     *     2: mixed,
+     *     3: bool,
+     *     4: string|null,
+     * }>
+     */
     public static function intDataProvider(): array
     {
         return [
-            [1.00,         true],
-            [0.00,         true],
-            [0.01,         false],
-            [-0.1,         false],
-            [-1,           true],
-            ['10',         true],
-            [1,            true],
-            ['not an int', false],
-            [true,         false],
-            [false,        false],
+            ['en', false, 1.00,         true,  null],
+            ['en', false, 0.00,         true,  null],
+            ['en', false, 0.01,         false, IsInt::NOT_INT],
+            ['en', false, -0.1,         false, IsInt::NOT_INT],
+            ['en', false, -1,           true,  null],
+            ['en', false, '10',         true,  null],
+            ['en', false, 1,            true,  null],
+            ['en', false, 'not an int', false, IsInt::NOT_INT],
+            ['en', false, true,         false, IsInt::INVALID],
+            ['en', false, false,        false, IsInt::INVALID],
+            ['en', false, PHP_INT_MAX,  true,  null],
+            ['en', false, PHP_INT_MIN,  true,  null],
+            ['en', true,  1.00,         false, IsInt::NOT_INT_STRICT],
+            ['en', true,  0.00,         false, IsInt::NOT_INT_STRICT],
+            ['en', true,  0.01,         false, IsInt::NOT_INT_STRICT],
+            ['en', true,  -0.1,         false, IsInt::NOT_INT_STRICT],
+            ['en', true,  -1,           true,  null],
+            ['en', true,  '10',         false, IsInt::NOT_INT_STRICT],
+            ['en', true,  1,            true,  null],
+            ['en', true,  'not an int', false, IsInt::NOT_INT_STRICT],
+            ['en', true,  true,         false, IsInt::INVALID],
+            ['en', true,  false,        false, IsInt::INVALID],
+            ['en', true,  PHP_INT_MAX,  true,  null],
+            ['en', true,  PHP_INT_MIN,  true,  null],
         ];
     }
 
-    /**
-     * Ensures that the validator follows expected behavior
-     *
-     * @param mixed $intVal
-     */
+    /** @param non-empty-string $locale */
     #[DataProvider('intDataProvider')]
-    public function testBasic($intVal, bool $expected): void
+    public function testBasic(string $locale, bool $strict, mixed $value, bool $expected, string|null $errorKey): void
     {
-        $this->validator->setLocale('en');
-        self::assertEquals($expected, $this->validator->isValid($intVal));
+        $validator = new IsInt(['locale' => $locale, 'strict' => $strict]);
+        self::assertEquals($expected, $validator->isValid($value));
+        if ($errorKey === null) {
+            return;
+        }
+
+        $messages = $validator->getMessages();
+        self::assertArrayHasKey($errorKey, $messages);
     }
 
-    /**
-     * Ensures that getMessages() returns expected default value
-     */
-    public function testGetMessages(): void
-    {
-        self::assertEquals([], $this->validator->getMessages());
-    }
-
-    /**
-     * Ensures that set/getLocale() works
-     */
     public function testSettingLocales(): void
     {
-        $this->validator->setLocale('de');
-        self::assertEquals('de', $this->validator->getLocale());
-        self::assertEquals(false, $this->validator->isValid('10 000'));
-        self::assertEquals(true, $this->validator->isValid('10.000'));
+        $validator = new IsInt(['locale' => 'de']);
+        self::assertTrue($validator->isValid('10 000'));
+        self::assertTrue($validator->isValid('10.000'));
+        self::assertFalse($validator->isValid('10,99'));
     }
 
     public function testNonStringValidation(): void
     {
-        self::assertFalse($this->validator->isValid([1 => 1]));
+        $validator = new IsInt(['locale' => 'de']);
+        self::assertFalse($validator->isValid([1 => 1]));
     }
 
-    public function testUsingApplicationLocale(): void
+    /**
+     * @return iterable<string, array{
+     *     0: non-empty-string,
+     *     1: string,
+     * }>
+     */
+    public static function numbersInDifferentLocalesProvider(): iterable
     {
-        Locale::setDefault('de');
-        $valid = new IsIntValidator();
-        self::assertTrue($valid->isValid('10.000'));
-    }
-
-    public function testLocaleDetectsNoEnglishLocaleOnOtherSetLocale(): void
-    {
-        Locale::setDefault('de');
-        $valid = new IsIntValidator();
-        self::assertTrue($valid->isValid(1200));
-        self::assertFalse($valid->isValid('1,200'));
-    }
-
-    public function testEqualsMessageTemplates(): void
-    {
-        $validator = $this->validator;
-
-        self::assertSame($validator->getOption('messageTemplates'), $validator->getMessageTemplates());
-    }
-
-    public function testGetStrict(): void
-    {
-        self::assertFalse(
-            $this->validator->getStrict()
+        $locales = ['ar', 'bn', 'de', 'dz', 'en', 'fr-CH', 'ja', 'ks', 'ml-IN', 'mr', 'my', 'ps', 'ru', 'nl', 'ko'];
+        $numbers = array_map(
+            static fn (int $count): int => (int) str_repeat('1', $count),
+            range(1, 12),
         );
 
-        $this->validator->setStrict(true);
-        self::assertTrue(
-            $this->validator->getStrict()
-        );
+        foreach ($locales as $locale) {
+            $formatter = new NumberFormatter($locale, NumberFormatter::DEFAULT_STYLE);
+            foreach ($numbers as $number) {
+                $formatted = $formatter->format($number, NumberFormatter::TYPE_INT64);
+                yield sprintf('%s (%s)', $formatted, $locale) => [
+                    $locale,
+                    $formatted,
+                ];
+            }
+        }
     }
 
-    /**
-     * @return array<array-key, array{0: mixed}>
-     */
-    public static function setStrictInvalidParameterDataProvider(): array
+    /** @param non-empty-string $locale */
+    #[DataProvider('numbersInDifferentLocalesProvider')]
+    public function testFormattedIntegersInVariousLocales(string $locale, string $number): void
     {
-        return [
-            [null],
-            ['true'],
-            ['1'],
-            ['1.0'],
-            ['false'],
-            ['0'],
-            ['0.0'],
-        ];
-    }
+        $validator = new IsInt([
+            'locale' => $locale,
+            'strict' => false,
+        ]);
 
-    /**
-     * @param mixed $strict
-     */
-    #[DataProvider('setStrictInvalidParameterDataProvider')]
-    public function testSetStrictThrowsInvalidArgumentException($strict): void
-    {
-        $this->expectException(Exception\InvalidArgumentException::class);
-        /** @psalm-suppress MixedArgument */
-        $this->validator->setStrict($strict);
-    }
-
-    /**
-     * @return array<array-key, array{0: mixed, 1: bool}>
-     */
-    public static function strictIntDataProvider(): array
-    {
-        return [
-            [1,            true],
-            [0,            true],
-            [1.00,         false],
-            [0.00,         false],
-            [0.01,         false],
-            [-0.1,         false],
-            [-1,           true],
-            ['10',         false],
-            ['1',          false],
-            ['not an int', false],
-            [true,         false],
-            [false,        false],
-        ];
-    }
-
-    /**
-     * @param mixed $intVal
-     */
-    #[DataProvider('strictIntDataProvider')]
-    public function testStrictComparison($intVal, bool $expected): void
-    {
-        $this->validator->setLocale('en');
-        $this->validator->setStrict(true);
-
-        self::assertSame($expected, $this->validator->isValid($intVal));
+        self::assertTrue($validator->isValid($number));
     }
 }
