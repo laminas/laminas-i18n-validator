@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace LaminasTest\I18n\Validator;
 
-use Laminas\I18n\Validator\IsFloat as IsFloatValidator;
-use LaminasTest\I18n\TestCase;
-use Locale;
+use Laminas\I18n\Validator\IsFloat;
+use Laminas\Validator\Exception\InvalidArgumentException;
 use NumberFormatter;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
+use function get_debug_type;
+use function is_scalar;
 use function sprintf;
 
 use const INTL_ICU_DATA_VERSION;
@@ -17,37 +19,55 @@ use const INTL_ICU_VERSION;
 
 final class IsFloatTest extends TestCase
 {
-    private IsFloatValidator $validator;
+    private IsFloat $validator;
 
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->validator = new IsFloatValidator(['locale' => 'en']);
+        $this->validator = new IsFloat(['locale' => 'en']);
+    }
+
+    public function testThatLocaleIsARequiredOption(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The locale must be provided in the `locale` options key as a non-empty-string');
+
+        new IsFloat([]);
     }
 
     /**
      * Test float and integer type variables. Includes decimal and scientific notation NumberFormatter-formatted
      * versions. Should return true for all locales.
      *
-     * @param mixed   $value    that will be tested
-     * @param boolean $expected expected result of assertion
-     * @param string  $locale   locale for validation
+     * @param non-empty-string $locale
      */
     #[DataProvider('floatAndIntegerProvider')]
-    public function testFloatAndIntegers($value, bool $expected, string $locale, string $type): void
+    public function testFloatAndIntegers(mixed $value, bool $expected, string $locale, string $type): void
     {
-        $this->validator->setLocale($locale);
+        $validator = new IsFloat(['locale' => $locale]);
 
-        self::assertEquals(
+        self::assertSame(
             $expected,
-            $this->validator->isValid($value),
-            'Failed expecting ' . $value . ' being ' . ($expected ? 'true' : 'false')
-            . sprintf(' (locale:%s, type:%s)', $locale, $type) . ', ICU Version:' . INTL_ICU_VERSION . '-'
-            . INTL_ICU_DATA_VERSION
+            $validator->isValid($value),
+            sprintf(
+                'Failed expecting %s being %s (locale: %s, type: %s, ICU Version: %s - %s)',
+                is_scalar($value) ? (string) $value : get_debug_type($value),
+                $expected ? 'valid' : 'invalid',
+                $locale,
+                $type,
+                INTL_ICU_VERSION,
+                INTL_ICU_DATA_VERSION,
+            ),
         );
     }
 
-    /** @return array<array-key, array{0: mixed, 1: bool, 2: string, 3: string}> */
+    /**
+     * @return list<array{
+     *    0: mixed,
+     *    1: bool,
+     *    2: non-empty-string,
+     *    3: string,
+     * }>
+     */
     public static function floatAndIntegerProvider(): array
     {
         $trueArray       = [];
@@ -69,11 +89,13 @@ final class IsFloatTest extends TestCase
             -3,
         ];
 
-        //Loop locales and examples for a more thorough set of "true" test data
+        // Loop locales and examples for a more thorough set of "true" test data
         foreach ($testingLocales as $locale) {
             foreach ($testingExamples as $example) {
+                // The value as a regular float or int
                 $trueArray[] = [$example, true, $locale, 'raw'];
-                //Decimal Formatted
+
+                // Decimal Formatted String
                 $numberFormatter = NumberFormatter::create($locale, NumberFormatter::DECIMAL);
                 self::assertInstanceOf(NumberFormatter::class, $numberFormatter);
                 $trueArray[] = [
@@ -82,7 +104,8 @@ final class IsFloatTest extends TestCase
                     $locale,
                     'decimal',
                 ];
-                //Scientific Notation Formatted
+
+                // Scientific Notation Formatted String
                 $numberFormatter = NumberFormatter::create($locale, NumberFormatter::SCIENTIFIC);
                 self::assertInstanceOf(NumberFormatter::class, $numberFormatter);
                 $trueArray[] = [
@@ -93,6 +116,7 @@ final class IsFloatTest extends TestCase
                 ];
             }
         }
+
         return $trueArray;
     }
 
@@ -101,14 +125,14 @@ final class IsFloatTest extends TestCase
      * NO-BREAK SPACE, ARABIC THOUSANDS SEPARATOR, and ARABIC DECIMAL SEPARATOR are replaced with more typical ASCII
      * characters.
      *
-     * @param string  $value    that will be tested
+     * @param string  $value that will be tested
      * @param boolean $expected expected result of assertion
-     * @param string  $locale   locale for validation
+     * @param non-empty-string $locale locale for validation
      */
     #[DataProvider('lookAlikeProvider')]
     public function testLookALikes(string $value, bool $expected, string $locale): void
     {
-        $validator = new IsFloatValidator([
+        $validator = new IsFloat([
             'locale' => $locale,
         ]);
 
@@ -124,7 +148,7 @@ final class IsFloatTest extends TestCase
         );
     }
 
-    /** @return array<array-key, array{0: string, 1: bool, 2: string}> */
+    /** @return array<array-key, array{0: string, 1: bool, 2: non-empty-string}> */
     public static function lookAlikeProvider(): array
     {
         $trueArray    = [];
@@ -139,35 +163,34 @@ final class IsFloatTest extends TestCase
             'ru'              => '2 000,00',
         ];
 
-        //Loop locales and examples for a more thorough set of "true" test data
+        // Loop locales and examples for a more thorough set of "true" test data
         foreach ($testingArray as $locale => $example) {
             $trueArray[] = [$example, true, $locale];
         }
+
         return $trueArray;
     }
 
     /**
-     * Test manually-generated strings for specific locales. These are "look-alike" strings where graphemes such as
-     * NO-BREAK SPACE, ARABIC THOUSANDS SEPARATOR, and ARABIC DECIMAL SEPARATOR are replaced with more typical ASCII
-     * characters.
-     *
-     * @param string  $value    that will be tested
+     * @param string $value that will be tested
      * @param boolean $expected expected result of assertion
-     * @param string  $locale   locale for validation
+     * @param non-empty-string $locale locale for validation
      */
     #[DataProvider('validationFailureProvider')]
     public function testValidationFailures(string $value, bool $expected, string $locale): void
     {
-        $this->validator->setLocale($locale);
+        $validator = new IsFloat([
+            'locale' => $locale,
+        ]);
 
         self::assertEquals(
             $expected,
-            $this->validator->isValid($value),
+            $validator->isValid($value),
             'Failed expecting ' . $value . ' being ' . ($expected ? 'true' : 'false') . sprintf(' (locale:%s)', $locale)
         );
     }
 
-    /** @return array<array-key, array{0: string, 1: bool, 2: string}> */
+    /** @return list<array{0: string, 1: bool, 2: non-empty-string}> */
     public static function validationFailureProvider(): array
     {
         $trueArray    = [];
@@ -188,40 +211,9 @@ final class IsFloatTest extends TestCase
         return $trueArray;
     }
 
-    /**
-     * Ensures that getMessages() returns expected default value
-     */
-    public function testGetMessages(): void
-    {
-        self::assertEquals([], $this->validator->getMessages());
-    }
-
-    /**
-     * Ensures that set/getLocale() works
-     */
-    public function testSettingLocales(): void
-    {
-        $this->validator->setLocale('de');
-        self::assertEquals('de', $this->validator->getLocale());
-    }
-
     public function testNonStringValidation(): void
     {
         self::assertFalse($this->validator->isValid([1 => 1]));
-    }
-
-    public function testUsingApplicationLocale(): void
-    {
-        Locale::setDefault('de');
-        $valid = new IsFloatValidator();
-        self::assertEquals('de', $valid->getLocale());
-    }
-
-    public function testEqualsMessageTemplates(): void
-    {
-        $validator = $this->validator;
-
-        self::assertSame($validator->getOption('messageTemplates'), $validator->getMessageTemplates());
     }
 
     public function testNotFloat(): void
