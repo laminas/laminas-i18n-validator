@@ -132,4 +132,19 @@ final class IsIntTest extends TestCase
 
         self::assertTrue($validator->isValid($number));
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new IsInt([
+            'locale'   => 'en',
+            'messages' => [
+                IsInt::NOT_INT => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            IsInt::NOT_INT => 'Bad News',
+        ], $validator->getMessages());
+    }
 }

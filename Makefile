@@ -145,7 +145,7 @@ composer-require-checker: ## Check for symbols from un-declared dependencies
 mutants: ## Run mutation tests
 	@$(call MK_INFO,"Running Mutation Tests")
 	@docker run $(DOCKER_PHP) tools/infection/vendor/bin/roave-infection-static-analysis-plugin \
- 		--configuration=infection.json5 \
+ 		--configuration=.infection.json5.dist \
  		--psalm-config=psalm.xml \
  		--logger-html='infection.html'
 .PHONY: mutants

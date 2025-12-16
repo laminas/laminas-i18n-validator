@@ -105,4 +105,19 @@ final class AlnumTest extends TestCase
         $messages = $validator->getMessages();
         self::assertArrayHasKey($expectMessageKey, $messages);
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new Alnum([
+            'locale'   => 'en',
+            'messages' => [
+                Alnum::NOT_ALNUM => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            Alnum::NOT_ALNUM => 'Bad News',
+        ], $validator->getMessages());
+    }
 }

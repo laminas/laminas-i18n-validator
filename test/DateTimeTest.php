@@ -224,4 +224,20 @@ final class DateTimeTest extends TestCase
         $messages = $validator->getMessages();
         self::assertArrayHasKey(DateTimeValidator::INVALID, $messages);
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new DateTimeValidator([
+            'locale'   => 'en',
+            'timezone' => 'UTC',
+            'messages' => [
+                DateTimeValidator::INVALID_DATETIME => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            DateTimeValidator::INVALID_DATETIME => 'Bad News',
+        ], $validator->getMessages());
+    }
 }

@@ -233,4 +233,19 @@ final class IsFloatTest extends TestCase
             $message['notFloat']
         );
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new IsFloat([
+            'locale'   => 'en',
+            'messages' => [
+                IsFloat::NOT_FLOAT => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            IsFloat::NOT_FLOAT => 'Bad News',
+        ], $validator->getMessages());
+    }
 }

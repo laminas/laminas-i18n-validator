@@ -111,4 +111,19 @@ final class AlphaTest extends TestCase
         $messages = $validator->getMessages();
         self::assertArrayHasKey($expectMessageKey, $messages);
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new Alpha([
+            'locale'   => 'en',
+            'messages' => [
+                Alpha::NOT_ALPHA => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            Alpha::NOT_ALPHA => 'Bad News',
+        ], $validator->getMessages());
+    }
 }

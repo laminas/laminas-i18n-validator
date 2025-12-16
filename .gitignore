@@ -4,3 +4,4 @@
 /vendor/
 .markdownlint.json
 infection.json5
+infection.html

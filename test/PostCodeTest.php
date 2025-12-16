@@ -232,4 +232,19 @@ final class PostCodeTest extends TestCase
             self::assertSame(PREG_NO_ERROR, preg_last_error());
         }
     }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new PostCode([
+            'locale'   => 'en_GB',
+            'messages' => [
+                PostCode::NO_MATCH => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            PostCode::NO_MATCH => 'Bad News',
+        ], $validator->getMessages());
+    }
 }
