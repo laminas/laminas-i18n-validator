@@ -1,69 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\I18n\Validator;
 
-use Laminas\Stdlib\ArrayUtils;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\Validator\AbstractValidator;
-use Laminas\Validator\Callback;
-use Laminas\Validator\Exception;
+use Laminas\Validator\Exception\InvalidArgumentException;
 use Locale;
-use Traversable;
 
 use function array_key_exists;
-use function is_callable;
+use function assert;
 use function is_int;
 use function is_string;
+use function preg_last_error;
+use function preg_last_error_msg;
 use function preg_match;
-use function strlen;
+use function sprintf;
+use function str_ends_with;
+use function str_starts_with;
 
-/** @final */
-class PostCode extends AbstractValidator
+use const PREG_NO_ERROR;
+
+/**
+ * Validate whether the input is valid postal code
+ *
+ * @psalm-type Options = array{
+ *     locale?: non-empty-string,
+ *     format?: non-empty-string,
+ *     messages?: array<string, string>,
+ *     translator?: TranslatorInterface|null,
+ *     translatorTextDomain?: string|null,
+ *     translatorEnabled?: bool,
+ *     valueObscured?: bool,
+ * }
+ */
+final class PostCode extends AbstractValidator
 {
-    public const INVALID        = 'postcodeInvalid';
-    public const NO_MATCH       = 'postcodeNoMatch';
-    public const SERVICE        = 'postcodeService';
-    public const SERVICEFAILURE = 'postcodeServiceFailure';
+    public const INVALID  = 'postcodeInvalid';
+    public const NO_MATCH = 'postcodeNoMatch';
 
-    /**
-     * Validation failure message template definitions
-     *
-     * @var array<string, string>
-     */
-    protected $messageTemplates = [
-        self::INVALID        => 'Invalid type given. String or integer expected',
-        self::NO_MATCH       => 'The input does not appear to be a postal code',
-        self::SERVICE        => 'The input does not appear to be a postal code',
-        self::SERVICEFAILURE => 'An exception has been raised while validating the input',
-    ];
-
-    /**
-     * Optional Locale to use
-     *
-     * @var string|null
-     */
-    protected $locale;
-
-    /**
-     * Optional Manual postal code format
-     *
-     * @var string|null
-     */
-    protected $format;
-
-    /**
-     * Optional Service callback for additional validation
-     *
-     * @var mixed|null
-     */
-    protected $service;
-
-    // @codingStandardsIgnoreStart
-    /**
-     * Postal Code regexes by territory
-     *
-     * @var array
-     */
-    protected static $postCodeRegex = [
+    private const POST_CODE_REGEX = [
+        // phpcs:ignore Generic.Files.LineLength
         'GB' => 'GIR[ ]?0AA|^((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}))$|^BFPO[ ]?\d{1,4}',
         'JE' => 'JE\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
         'GG' => 'GY\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
@@ -225,124 +203,68 @@ class PostCode extends AbstractValidator
         'VN' => '\d{6}',
         'VC' => 'VC\d{4}',
     ];
-    // @codingStandardsIgnoreEnd
+
+    /** @var array<string, string> */
+    protected array $messageTemplates = [
+        self::INVALID  => 'Invalid type given. String or integer expected',
+        self::NO_MATCH => 'The input does not appear to be a postal code',
+    ];
+
+    /** @var key-of<self::POST_CODE_REGEX>|null */
+    private readonly string|null $region;
 
     /**
-     * Constructor for the PostCode validator
+     * Optional Manual postal code format
      *
-     * Accepts a string locale and/or "format".
-     *
-     * @param iterable<string, mixed> $options
+     * @var non-empty-string|null
      */
-    public function __construct($options = [])
+    private readonly string|null $format;
+
+    /** @param Options $options */
+    public function __construct(array $options = [])
     {
-        if ($options instanceof Traversable) {
-            $options = ArrayUtils::iteratorToArray($options);
+        $locale       = $options['locale'] ?? null;
+        $this->format = $options['format'] ?? null;
+
+        if ($this->format === null && $locale === null) {
+            throw new InvalidArgumentException('One of `format` or `locale` must be provided');
         }
 
-        if (array_key_exists('locale', $options)) {
-            $this->setLocale($options['locale']);
-        } else {
-            $this->setLocale(Locale::getDefault());
+        $region = null;
+        if ($locale !== null && $this->format === null) {
+            $region = Locale::getRegion($locale);
+            if ($region === null || $region === '' || ! array_key_exists($region, self::POST_CODE_REGEX)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The locale "%s" does not represent a known geographic region',
+                    $locale,
+                ));
+            }
         }
-        if (isset($options['format'])) {
-            $this->setFormat($options['format']);
+
+        $this->region = $region;
+
+        /** @psalm-suppress DocblockTypeContradiction Defensive checks */
+        if ($this->format === '') {
+            throw new InvalidArgumentException('Custom post code format patterns must be non-empty-string');
         }
-        if (isset($options['service'])) {
-            $this->setService($options['service']);
+
+        if ($this->format !== null) {
+            $pattern = $this->resolvePattern();
+            /** @psalm-suppress UnusedFunctionCall */
+            @preg_match($pattern, 'anything');
+            if (preg_last_error() !== PREG_NO_ERROR) {
+                throw new InvalidArgumentException(sprintf(
+                    'The format pattern "%s" is not a valid regex: %s',
+                    $pattern,
+                    preg_last_error_msg(),
+                ));
+            }
         }
 
         parent::__construct($options);
     }
 
-    /**
-     * Returns the set locale
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string|null The set locale
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-     * Sets the locale to use
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $locale
-     * @return $this
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-        return $this;
-    }
-
-    /**
-     * Returns the set postal code format
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string|null
-     */
-    public function getFormat()
-    {
-        return $this->format;
-    }
-
-    /**
-     * Sets a self defined postal format as regex
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $format
-     * @return $this
-     */
-    public function setFormat($format)
-    {
-        $this->format = $format;
-        return $this;
-    }
-
-    /**
-     * Returns the actual set service
-     *
-     * @deprecated since 2.12.0, this method will be removed in version 3.0.0 of this component.
-     *             Additional validations should be done via a validation chain.
-     *
-     * @return mixed|null
-     */
-    public function getService()
-    {
-        return $this->service;
-    }
-
-    /**
-     * Sets a new callback for service validation
-     *
-     * @deprecated since 2.12.0, this method will be removed in version 3.0.0 of this component.
-     *             Additional validations should be done via a validation chain.
-     *
-     * @param mixed|null $service
-     * @return $this
-     */
-    public function setService($service)
-    {
-        $this->service = $service;
-        return $this;
-    }
-
-    /**
-     * Returns true if and only if $value is a valid postalcode
-     *
-     * @param mixed $value
-     * @return bool
-     * @throws Exception\InvalidArgumentException
-     */
-    public function isValid($value)
+    public function isValid(mixed $value): bool
     {
         if (! is_string($value) && ! is_int($value)) {
             $this->error(self::INVALID);
@@ -351,55 +273,41 @@ class PostCode extends AbstractValidator
 
         $this->setValue($value);
 
-        $service = $this->getService();
-        $locale  = $this->getLocale();
-        $format  = $this->getFormat();
-        if (($format === null || $format === '') && $locale !== null) {
-            $region = Locale::getRegion($locale);
-            if ('' === $region || $region === null) {
-                throw new Exception\InvalidArgumentException('Locale must contain a region');
-            }
-            if (isset(static::$postCodeRegex[$region])) {
-                $format = static::$postCodeRegex[$region];
-            }
-        }
-        if (null === $format || '' === $format) {
-            throw new Exception\InvalidArgumentException('A postcode-format string has to be given for validation');
-        }
-
-        if ($format[0] !== '/') {
-            $format = '/^' . $format;
-        }
-        if ($format[strlen((string) $format) - 1] !== '/') {
-            $format .= '$/';
-        }
-
-        if ($service !== null) {
-            if (! is_callable($service)) {
-                throw new Exception\InvalidArgumentException('Invalid callback given');
-            }
-
-            try {
-                $callback = new Callback($service);
-                $callback->setOptions([
-                    'format' => $format,
-                    'locale' => $locale,
-                ]);
-                if (! $callback->isValid($value)) {
-                    $this->error(self::SERVICE, $value);
-                    return false;
-                }
-            } catch (\Exception) {
-                $this->error(self::SERVICEFAILURE, $value);
-                return false;
-            }
-        }
-
-        if (! preg_match($format, (string) $value)) {
+        if (! preg_match($this->resolvePattern(), (string) $value)) {
             $this->error(self::NO_MATCH);
+
             return false;
         }
 
         return true;
+    }
+
+    /** @return non-empty-string */
+    private function resolvePattern(): string
+    {
+        if ($this->format !== null) {
+            return $this->format;
+        }
+
+        assert($this->region !== null);
+
+        return $this->normalisePattern(self::POST_CODE_REGEX[$this->region]);
+    }
+
+    /**
+     * @param non-empty-string $pattern
+     * @return non-empty-string
+     */
+    private function normalisePattern(string $pattern): string
+    {
+        if (! str_starts_with($pattern, '/^')) {
+            $pattern = '/^' . $pattern;
+        }
+
+        if (! str_ends_with($pattern, '$/')) {
+            $pattern .= '$/';
+        }
+
+        return $pattern;
     }
 }

@@ -5,30 +5,22 @@ declare(strict_types=1);
 namespace LaminasTest\I18n\Validator;
 
 use Generator;
-use Laminas\I18n\Validator\PostCode as PostCodeValidator;
+use Laminas\I18n\Validator\PostCode;
 use Laminas\Validator\Exception\InvalidArgumentException;
-use LaminasTest\I18n\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+
+use function preg_last_error;
+use function preg_match;
+use function sprintf;
+
+use const PREG_NO_ERROR;
 
 final class PostCodeTest extends TestCase
 {
-    private PostCodeValidator $validator;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validator = new PostCodeValidator(['locale' => 'de_AT']);
-    }
-
-    #[DataProvider('UKPostCodesDataProvider')]
-    public function testUKBasic(string $postCode, bool $expected): void
-    {
-        $ukValidator = new PostCodeValidator(['locale' => 'en_GB']);
-        self::assertSame($expected, $ukValidator->isValid($postCode));
-    }
-
     /** @return array<array-key, array{0: string, 1: bool}> */
-    public static function UKPostCodesDataProvider(): array
+    public static function gbPostCodesDataProvider(): array
     {
         return [
             ['CA3 5JQ', true],
@@ -43,8 +35,15 @@ final class PostCodeTest extends TestCase
         ];
     }
 
+    #[DataProvider('gbPostCodesDataProvider')]
+    public function testUKBasic(string $postCode, bool $expected): void
+    {
+        $ukValidator = new PostCode(['locale' => 'en_GB']);
+        self::assertSame($expected, $ukValidator->isValid($postCode));
+    }
+
     /** @return array<array-key, array{0: mixed, 1: bool}> */
-    public static function postCodesDataProvider(): array
+    public static function dePostCodesDataProvider(): array
     {
         return [
             ['2292',    true],
@@ -61,123 +60,87 @@ final class PostCodeTest extends TestCase
         ];
     }
 
-    /**
-     * Ensures that the validator follows expected behavior
-     *
-     * @param mixed $postCode
-     */
-    #[DataProvider('postCodesDataProvider')]
-    public function testBasic($postCode, bool $expected): void
+    #[DataProvider('dePostCodesDataProvider')]
+    public function testBasic(mixed $postCode, bool $expected): void
     {
-        self::assertEquals($expected, $this->validator->isValid($postCode));
+        $validator = new PostCode(['locale' => 'de_AT']);
+        self::assertEquals($expected, $validator->isValid($postCode));
     }
 
-    /**
-     * Ensures that getMessages() returns expected default value
-     */
-    public function testGetMessages(): void
-    {
-        self::assertEquals([], $this->validator->getMessages());
-    }
-
-    /**
-     * Ensures that a region is available
-     */
-    public function testSettingLocalesWithoutRegion(): void
+    public function testOmittingTheLocaleAndACustomPatternCausesAnException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Locale must contain a region');
-        $this->validator->setLocale('de')->isValid('1000');
+        $this->expectExceptionMessage('One of `format` or `locale` must be provided');
+        new PostCode([]);
+    }
+
+    public function testThatGivenLocalesMustHaveKnownRegionsWhenFormatIsNotGiven(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The locale "jj_XC" does not represent a known geographic region');
+        new PostCode(['locale' => 'jj_XC']);
+    }
+
+    public function testThatGivenLocalesAreIgnoredWhenFormatIsGiven(): void
+    {
+        $validator = new PostCode(['locale' => 'jj_XC', 'format' => '/^[0-9]{3}z$/']);
+        self::assertTrue($validator->isValid('111z'));
+    }
+
+    public function testCustomFormatMustBeNonEmpty(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Custom post code format patterns must be non-empty-string');
+
+        /** @psalm-suppress InvalidArgument */
+        new PostCode(['format' => '']);
     }
 
     /**
-     * Ensures that the region contains postal codes
+     * @return list<array{
+     *     0: non-empty-string,
+     *     1: mixed,
+     *     2: bool,
+     * }>
      */
-    public function testSettingLocalesWithoutPostalCodes(): void
+    public static function customFormatProvider(): array
+    {
+        return [
+            ['/^[0-5]{3}$/', '333', true],
+            ['/^[0-5]{3}$/', '789', false],
+            ['/^[0-5]{3}$/', 123, true],
+            ['/^[0-5]{3}$/', 789, false],
+        ];
+    }
+
+    /** @param non-empty-string $format */
+    #[DataProvider('customFormatProvider')]
+    public function testCustomFormat(string $format, mixed $input, bool $expect): void
+    {
+        $validator = new PostCode(['format' => $format]);
+
+        self::assertSame($expect, $validator->isValid($input));
+    }
+
+    public function testMalformedCustomRegex(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('A postcode-format string has to be given for validation');
-        $this->validator->setLocale('gez_ER')->isValid('1000');
-    }
+        $this->expectExceptionMessage('The format pattern "({()" is not a valid regex');
+        $validator = new PostCode(['format' => '({()']);
 
-    /**
-     * Ensures locales can be retrieved
-     */
-    public function testGettingLocale(): void
-    {
-        self::assertEquals('de_AT', $this->validator->getLocale());
-    }
-
-    /**
-     * Ensures format can be set and retrieved
-     */
-    public function testSetGetFormat(): void
-    {
-        $this->validator->setFormat('\d{1}');
-        self::assertEquals('\d{1}', $this->validator->getFormat());
-    }
-
-    public function testSetGetFormatThrowsExceptionOnNullFormat(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('A postcode-format string has to be given');
-        $this->validator->setLocale(null)->setFormat(null)->isValid('1000');
-    }
-
-    public function testSetGetFormatThrowsExceptionOnEmptyFormat(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('A postcode-format string has to be given');
-        $this->validator->setLocale(null)->setFormat('')->isValid('1000');
+        $validator->isValid('foo');
     }
 
     public function testErrorMessageText(): void
     {
-        self::assertFalse($this->validator->isValid('hello'));
-        $message = $this->validator->getMessages();
-        self::assertStringContainsString('not appear to be a postal code', $message['postcodeNoMatch']);
-    }
-
-     /**
-      * Test service class with invalid validation
-      */
-    public function testServiceClass(): void
-    {
-        $params = (object) [
-            'serviceTrue'  => null,
-            'serviceFalse' => null,
-        ];
-
-        $serviceTrue = static function (string $value) use ($params): bool {
-            $params->serviceTrue = $value;
-            return true;
-        };
-
-        $serviceFalse = static function (string $value) use ($params): bool {
-            $params->serviceFalse = $value;
-            return false;
-        };
-
-        self::assertEquals(null, $this->validator->getService());
-
-        $this->validator->setService($serviceTrue);
-        self::assertEquals($this->validator->getService(), $serviceTrue);
-        self::assertTrue($this->validator->isValid('2292'));
-        self::assertEquals($params->serviceTrue, '2292');
-
-        $this->validator->setService($serviceFalse);
-        self::assertEquals($this->validator->getService(), $serviceFalse);
-        self::assertFalse($this->validator->isValid('hello'));
-        self::assertEquals($params->serviceFalse, 'hello');
-
-        $message = $this->validator->getMessages();
-        self::assertStringContainsString('not appear to be a postal code', $message['postcodeService']);
-    }
-
-    public function testEqualsMessageTemplates(): void
-    {
-        $validator = $this->validator;
-        self::assertSame($validator->getOption('messageTemplates'), $validator->getMessageTemplates());
+        $validator = new PostCode(['locale' => 'de_AT']);
+        self::assertFalse($validator->isValid('hello'));
+        $message = $validator->getMessages();
+        self::assertArrayHasKey(PostCode::NO_MATCH, $message);
+        self::assertStringContainsString(
+            'not appear to be a postal code',
+            $message[PostCode::NO_MATCH],
+        );
     }
 
     /**
@@ -186,8 +149,7 @@ final class PostCodeTest extends TestCase
      */
     public function testFrPostCodes(): void
     {
-        $validator = $this->validator;
-        $validator->setLocale('fr_FR');
+        $validator = new PostCode(['locale' => 'fr_FR']);
 
         self::assertTrue($validator->isValid('13100')); // AIX EN PROVENCE
         self::assertTrue($validator->isValid('97439')); // STE ROSE
@@ -203,8 +165,7 @@ final class PostCodeTest extends TestCase
      */
     public function testNoPostCodes(): void
     {
-        $validator = $this->validator;
-        $validator->setLocale('en_NO');
+        $validator = new PostCode(['locale' => 'en_NO']);
 
         self::assertTrue($validator->isValid('0301')); // OSLO
         self::assertTrue($validator->isValid('9910')); // BJØRNEVATN
@@ -219,8 +180,7 @@ final class PostCodeTest extends TestCase
      */
     public function testLvPostCodes(): void
     {
-        $validator = $this->validator;
-        $validator->setLocale('en_LV');
+        $validator = new PostCode(['locale' => 'en_LV']);
 
         self::assertTrue($validator->isValid('LV-0000'));
         self::assertTrue($validator->isValid('0000'));
@@ -250,9 +210,26 @@ final class PostCodeTest extends TestCase
     #[DataProvider('liPostCode')]
     public function testLiPostCodes(int $postCode): void
     {
-        $validator = $this->validator;
-        $validator->setLocale('de_LI');
+        $validator = new PostCode(['locale' => 'de_LI']);
 
         self::assertTrue($validator->isValid($postCode));
+    }
+
+    public function testInternalRegexesAreValidPatterns(): void
+    {
+        $class    = new ReflectionClass(PostCode::class);
+        $constant = $class->getReflectionConstant('POST_CODE_REGEX');
+        self::assertNotFalse($constant);
+        $list = $constant->getValue();
+        self::assertIsArray($list);
+
+        foreach ($list as $item) {
+            self::assertIsString($item);
+
+            /** @psalm-suppress UnusedFunctionCall */
+            @preg_match(sprintf('/^%s$/', $item), 'whatever');
+
+            self::assertSame(PREG_NO_ERROR, preg_last_error());
+        }
     }
 }
