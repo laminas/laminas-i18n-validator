@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8468fed8a2d730ac44860ba8f8837ffb",
+    "content-hash": "4ab00c06b5530891c749cb81cdcbe616",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -54,6 +54,89 @@
                 }
             ],
             "time": "2025-02-20T17:42:39+00:00"
+        },
+        {
+            "name": "laminas/laminas-i18n",
+            "version": "3.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-i18n.git",
+                "reference": "01fc4d3285e91077d2e355abf4659c8cee5e7465"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/01fc4d3285e91077d2e355abf4659c8cee5e7465",
+                "reference": "01fc4d3285e91077d2e355abf4659c8cee5e7465",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-intl": "*",
+                "laminas/laminas-servicemanager": "^4.5.0",
+                "laminas/laminas-stdlib": "^3.0",
+                "laminas/laminas-translator": "^1.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/cache": "^2.0",
+                "psr/container": "^1.0 || ^2.0"
+            },
+            "conflict": {
+                "laminas/laminas-view": "<2.20.0",
+                "zendframework/zend-i18n": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-cache": "^4.1.0",
+                "laminas/laminas-cache-storage-adapter-memory": "^3.1.0",
+                "laminas/laminas-coding-standard": "^3.1",
+                "laminas/laminas-config": "^3.10.1",
+                "laminas/laminas-eventmanager": "^3.15.0",
+                "phpunit/phpunit": "^11.5.46",
+                "psalm/plugin-phpunit": "^0.19.5",
+                "vimeo/psalm": "^6.14.2"
+            },
+            "suggest": {
+                "laminas/laminas-cache": "Provides a PSR-6 cache implementation for caching translations",
+                "laminas/laminas-config": "You should install this package to use the INI translation format",
+                "laminas/laminas-eventmanager": "You should install this package to use the events in the translator",
+                "laminas/laminas-i18n-phone-number": "Tools for filtering, validating and presenting phone numbers",
+                "laminas/laminas-i18n-resources": "This package provides validator and captcha translations"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\I18n",
+                    "config-provider": "Laminas\\I18n\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\I18n\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Provide translations for your application, and filter and validate internationalized values",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "i18n",
+                "laminas"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-i18n/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-i18n/issues",
+                "rss": "https://github.com/laminas/laminas-i18n/releases.atom",
+                "source": "https://github.com/laminas/laminas-i18n"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2025-12-16T20:27:41+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",
@@ -386,6 +469,55 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.7.0"
             },
             "time": "2025-12-06T11:56:16+00:00"
+        },
+        {
+            "name": "psr/cache",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/cache.git",
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Cache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for caching libraries",
+            "keywords": [
+                "cache",
+                "psr",
+                "psr-6"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/cache/tree/2.0.0"
+            },
+            "time": "2021-02-03T23:23:37+00:00"
         },
         {
             "name": "psr/container",
@@ -5756,7 +5888,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "laminas/laminas-i18n": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
