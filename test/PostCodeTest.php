@@ -64,7 +64,7 @@ final class PostCodeTest extends TestCase
     public function testBasic(mixed $postCode, bool $expected): void
     {
         $validator = new PostCode(['locale' => 'de_AT']);
-        self::assertEquals($expected, $validator->isValid($postCode));
+        self::assertSame($expected, $validator->isValid($postCode));
     }
 
     public function testOmittingTheLocaleAndACustomPatternCausesAnException(): void
@@ -83,7 +83,7 @@ final class PostCodeTest extends TestCase
 
     public function testThatGivenLocalesAreIgnoredWhenFormatIsGiven(): void
     {
-        $validator = new PostCode(['locale' => 'jj_XC', 'format' => '/^[0-9]{3}z$/']);
+        $validator = new PostCode(['locale' => 'jj_XC', 'format' => '/^\d{3}z$/']);
         self::assertTrue($validator->isValid('111z'));
     }
 

@@ -32,7 +32,7 @@ final class DateTimeTest extends TestCase
     {
         $validator = new DateTimeValidator($options);
 
-        self::assertEquals(
+        self::assertSame(
             $expected,
             $validator->isValid($value),
             sprintf(
@@ -99,7 +99,10 @@ final class DateTimeTest extends TestCase
             ],
         ];
 
-        return [...$trueArray, ...$falseArray];
+        return [
+            ...$trueArray,
+            ...$falseArray,
+        ];
     }
 
     /**

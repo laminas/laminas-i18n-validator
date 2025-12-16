@@ -72,7 +72,7 @@ final class IsIntTest extends TestCase
     public function testBasic(string $locale, bool $strict, mixed $value, bool $expected, string|null $errorKey): void
     {
         $validator = new IsInt(['locale' => $locale, 'strict' => $strict]);
-        self::assertEquals($expected, $validator->isValid($value));
+        self::assertSame($expected, $validator->isValid($value));
         if ($errorKey === null) {
             return;
         }

@@ -136,7 +136,7 @@ final class IsFloatTest extends TestCase
             'locale' => $locale,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $expected,
             $validator->isValid($value),
             sprintf(
@@ -183,7 +183,7 @@ final class IsFloatTest extends TestCase
             'locale' => $locale,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $expected,
             $validator->isValid($value),
             'Failed expecting ' . $value . ' being ' . ($expected ? 'true' : 'false') . sprintf(' (locale:%s)', $locale)

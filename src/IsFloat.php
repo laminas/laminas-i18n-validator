@@ -49,7 +49,7 @@ final class IsFloat extends AbstractValidator
     ];
 
     /** @var non-empty-string */
-    private string $locale;
+    private readonly string $locale;
 
     /** @param Options $options */
     public function __construct(array $options)
