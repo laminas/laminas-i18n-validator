@@ -1,72 +1,95 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\I18n\Validator;
 
-use Laminas\I18n\Filter\Alpha as AlphaFilter;
+use Laminas\Translator\TranslatorInterface;
+use Laminas\Validator\AbstractValidator;
+use Laminas\Validator\Exception\InvalidArgumentException;
+use Locale;
+use Stringable;
 
+use function in_array;
 use function is_string;
+use function preg_replace;
 
-/** @final */
-class Alpha extends Alnum
+/**
+ * Validates whether input contains only alphabetical characters and optionally whitespace
+ *
+ * @psalm-type Options = array{
+ *     allowWhiteSpace?: bool,
+ *     locale?: non-empty-string,
+ *     messages?: array<string, string>,
+ *     translator?: TranslatorInterface|null,
+ *     translatorTextDomain?: string|null,
+ *     translatorEnabled?: bool,
+ *     valueObscured?: bool,
+ * }
+ */
+final class Alpha extends AbstractValidator
 {
     public const INVALID      = 'alphaInvalid';
     public const NOT_ALPHA    = 'notAlpha';
     public const STRING_EMPTY = 'alphaStringEmpty';
 
-    /**
-     * Alphabetic filter used for validation
-     *
-     * @var AlphaFilter|null
-     */
-    protected static $filter;
-
-    /**
-     * Validation failure message template definitions
-     *
-     * @var array<string, string>
-     */
-    protected $messageTemplates = [
+    /** @var array<string, string> */
+    protected array $messageTemplates = [
         self::INVALID      => 'Invalid type given. String expected',
-        self::NOT_ALPHA    => 'The input contains non alphabetic characters',
+        self::NOT_ALPHA    => 'The input contains non-alphabetic characters',
         self::STRING_EMPTY => 'The input is an empty string',
     ];
 
-    /**
-     * Options for this validator
-     *
-     * @var array<string, mixed>
-     */
-    protected $options = [
-        'allowWhiteSpace' => false, // Whether to allow white space characters; off by default
-    ];
+    private readonly bool $allowWhiteSpace;
+    /** @var non-empty-string */
+    private readonly string $locale;
 
-    /**
-     * Returns true if and only if $value contains only alphabetic characters
-     *
-     * @param mixed $value
-     * @return bool
-     */
-    public function isValid($value)
+    /** @param Options $options */
+    public function __construct(array $options = [])
     {
-        if (! is_string($value)) {
+        $locale = $options['locale'] ?? null;
+        /** @psalm-suppress DocblockTypeContradiction - Defensive check */
+        if ($locale === null || $locale === '') {
+            throw new InvalidArgumentException(
+                'The locale must be provided in the `locale` options key as a non-empty-string',
+            );
+        }
+
+        $this->locale          = $locale;
+        $this->allowWhiteSpace = $options['allowWhiteSpace'] ?? false;
+
+        parent::__construct($options);
+    }
+
+    public function isValid(mixed $value): bool
+    {
+        if (! is_string($value) && ! $value instanceof Stringable) {
             $this->error(self::INVALID);
             return false;
         }
 
+        $value = (string) $value;
+
         $this->setValue($value);
 
-        if ('' === $value) {
+        if ($value === '') {
             $this->error(self::STRING_EMPTY);
             return false;
         }
 
-        if (null === static::$filter) {
-            static::$filter = new AlphaFilter();
+        $whiteSpace = $this->allowWhiteSpace ? '\s' : '';
+        $language   = Locale::getPrimaryLanguage($this->locale);
+
+        if (in_array($language, ['ja', 'ko', 'zh'], true)) {
+            // Use english alphabet
+            $pattern = '/[^a-zA-Z' . $whiteSpace . ']/u';
+        } else {
+            // Use native language alphabet
+            $pattern = '/[^\p{L}' . $whiteSpace . ']/u';
         }
 
-        static::$filter->setAllowWhiteSpace($this->getAllowWhiteSpace());
-
-        if ($value !== static::$filter->filter($value)) {
+        $filtered = preg_replace($pattern, '', $value);
+        if ($filtered !== $value) {
             $this->error(self::NOT_ALPHA);
             return false;
         }
