@@ -7,64 +7,50 @@ namespace LaminasTest\I18n\Validator;
 use DateTime;
 use IntlDateFormatter;
 use Laminas\I18n\Validator\DateTime as DateTimeValidator;
-use LaminasTest\I18n\TestCase;
-use Locale;
+use Laminas\Validator\Exception\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-use function date_default_timezone_get;
-use function date_default_timezone_set;
+use function get_debug_type;
+use function is_scalar;
+use function json_encode;
 use function sprintf;
 
+use const JSON_THROW_ON_ERROR;
+use const PHP_INT_MAX;
+
+/** @psalm-import-type Options from DateTimeValidator */
 final class DateTimeTest extends TestCase
 {
-    private DateTimeValidator $validator;
-    /** @var non-empty-string */
-    private string $timezone;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->timezone = date_default_timezone_get();
-
-        $this->validator = new DateTimeValidator([
-            'locale'   => 'en',
-            'timezone' => 'Europe/Amsterdam',
-        ]);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        date_default_timezone_set($this->timezone);
-    }
-
     /**
-     * Ensures that the validator follows expected behavior
+     * Ensures that the validator follows expected behaviour
      *
-     * @param string               $value    that will be tested
-     * @param boolean              $expected expected result of assertion
-     * @param array<string, mixed> $options  fed into the validator before validation
+     * @param Options $options
      */
     #[DataProvider('basicProvider')]
-    public function testBasic(string $value, bool $expected, array $options = []): void
+    public function testBasic(mixed $value, bool $expected, array $options): void
     {
-        $this->validator->setOptions($options);
+        $validator = new DateTimeValidator($options);
 
-        self::assertEquals(
+        self::assertSame(
             $expected,
-            $this->validator->isValid($value),
-            sprintf('Failed expecting %s being %s', $value, $expected ? 'true' : 'false')
-                . sprintf(
-                    ' (locale:%s, dateType: %s, timeType: %s, pattern:%s)',
-                    (string) $this->validator->getLocale(),
-                    (string) $this->validator->getDateType(),
-                    (string) $this->validator->getTimeType(),
-                    (string) $this->validator->getPattern()
-                )
+            $validator->isValid($value),
+            sprintf(
+                'The value "%s" was expected to be %s, but it was not. Options: %s',
+                is_scalar($value) ? (string) $value : get_debug_type($value),
+                $expected ? 'valid' : 'invalid',
+                json_encode($options, JSON_THROW_ON_ERROR),
+            ),
         );
     }
 
-    /** @return array<array-key, array{0: string, 1: boolean, 2: array<string, mixed>}> */
+    /**
+     * @return list<array{
+     *     0: string,
+     *     1: boolean,
+     *     2: Options,
+     * }>
+     */
     public static function basicProvider(): array
     {
         $trueArray      = [];
@@ -88,7 +74,12 @@ final class DateTimeTest extends TestCase
                         $trueArray[] = [
                             $formatter->format($testingDate),
                             true,
-                            ['locale' => $locale, 'dateType' => $dateFormat, 'timeType' => $timeFormat],
+                            [
+                                'locale'   => $locale,
+                                'timezone' => 'Europe/Amsterdam',
+                                'dateType' => $dateFormat,
+                                'timeType' => $timeFormat,
+                            ],
                         ];
                     }
                 }
@@ -101,53 +92,17 @@ final class DateTimeTest extends TestCase
                 false,
                 [
                     'locale'   => 'en',
+                    'timezone' => 'Europe/Amsterdam',
                     'dateType' => IntlDateFormatter::FULL,
                     'timeType' => IntlDateFormatter::NONE,
                 ],
             ],
         ];
 
-        return [...$trueArray, ...$falseArray];
-    }
-
-    /**
-     * Ensures that getMessages() returns expected default value
-     */
-    public function testGetMessages(): void
-    {
-        self::assertEquals([], $this->validator->getMessages());
-    }
-
-    /**
-     * Ensures that set/getLocale() works
-     */
-    public function testOptionLocale(): void
-    {
-        $this->validator->setLocale('de');
-        self::assertEquals('de', $this->validator->getLocale());
-    }
-
-    public function testApplicationOptionLocale(): void
-    {
-        Locale::setDefault('nl');
-        $valid = new DateTimeValidator();
-        self::assertEquals(Locale::getDefault(), $valid->getLocale());
-    }
-
-    /**
-     * Ensures that set/getTimezone() works
-     */
-    public function testOptionTimezone(): void
-    {
-        $this->validator->setLocale('Europe/Berlin');
-        self::assertEquals('Europe/Berlin', $this->validator->getLocale());
-    }
-
-    public function testApplicationOptionTimezone(): void
-    {
-        date_default_timezone_set('Europe/Berlin');
-        $valid = new DateTimeValidator();
-        self::assertEquals(date_default_timezone_get(), $valid->getTimezone());
+        return [
+            ...$trueArray,
+            ...$falseArray,
+        ];
     }
 
     /**
@@ -157,6 +112,7 @@ final class DateTimeTest extends TestCase
     {
         $validator = new DateTimeValidator([
             'locale'   => 'en_GB',
+            'timezone' => 'Europe/London',
             'dateType' => IntlDateFormatter::SHORT,
         ]);
 
@@ -166,12 +122,14 @@ final class DateTimeTest extends TestCase
 
     public function testSettingThePatternToNullIsAcceptable(): void
     {
+        /** @psalm-suppress InvalidArgument the null pattern is invalid but not actually problematic */
         $validator = new DateTimeValidator([
             'locale'   => 'en_GB',
+            'timezone' => 'Europe/London',
             'dateType' => IntlDateFormatter::SHORT,
             'timeType' => IntlDateFormatter::SHORT,
+            'pattern'  => null,
         ]);
-        $validator->setPattern(null);
 
         self::assertTrue($validator->isValid('1/1/2020, 10:34'));
     }
@@ -180,23 +138,13 @@ final class DateTimeTest extends TestCase
     {
         $validator = new DateTimeValidator([
             'locale'   => 'en_GB',
+            'timezone' => 'Europe/London',
             'dateType' => IntlDateFormatter::SHORT,
             'timeType' => IntlDateFormatter::SHORT,
+            'pattern'  => '',
         ]);
-        $validator->setPattern('');
 
         self::assertTrue($validator->isValid('1/1/2020, 10:34'));
-    }
-
-    /**
-     * Ensures that setting the pattern results in pattern used (by the validation process)
-     */
-    public function testOptionPattern(): void
-    {
-        $this->validator->setOptions(['pattern' => 'hh:mm']);
-
-        self::assertTrue($this->validator->isValid('02:00'));
-        self::assertEquals('hh:mm', $this->validator->getPattern());
     }
 
     public function testMultipleIsValidCalls(): void
@@ -204,15 +152,92 @@ final class DateTimeTest extends TestCase
         $formatter = IntlDateFormatter::create('en', IntlDateFormatter::FULL, IntlDateFormatter::FULL);
         self::assertNotNull($formatter);
         $validValue = $formatter->format(new DateTime());
-        $this->validator
-            ->setLocale('en')
-            ->setDateType(IntlDateFormatter::FULL)
-            ->setTimeType(IntlDateFormatter::FULL);
+        $validator  = new DateTimeValidator([
+            'locale'   => 'en',
+            'timezone' => 'Europe/London',
+            'dateType' => IntlDateFormatter::FULL,
+            'timeType' => IntlDateFormatter::FULL,
+        ]);
 
-        self::assertTrue($this->validator->isValid($validValue));
-        self::assertFalse($this->validator->isValid('12/31/2015'));
-        self::assertFalse($this->validator->isValid('23:59:59'));
-        self::assertFalse($this->validator->isValid('does not matter'));
-        self::assertTrue($this->validator->isValid($validValue));
+        self::assertTrue($validator->isValid($validValue));
+        self::assertFalse($validator->isValid('12/31/2015'));
+        self::assertFalse($validator->isValid('23:59:59'));
+        self::assertFalse($validator->isValid('does not matter'));
+        self::assertTrue($validator->isValid($validValue));
+    }
+
+    public function testThatLocaleIsARequiredOption(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The locale must be provided in the `locale` options key as a non-empty-string');
+
+        /** @psalm-suppress InvalidArgument */
+        new DateTimeValidator([]);
+    }
+
+    public function testThatTimezoneIsARequiredOption(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The desired timezone must be provided in the `timezone` options key as a non-empty-string',
+        );
+
+        /** @psalm-suppress InvalidArgument */
+        new DateTimeValidator(['locale' => 'en']);
+    }
+
+    public function testThatInvalidFormatterOptionsCauseExceptions(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('invalid date format style');
+
+        new DateTimeValidator([
+            'locale'   => 'en',
+            'timezone' => 'Europe/London',
+            'dateType' => PHP_INT_MAX,
+        ]);
+    }
+
+    /** @return list<array{0: mixed}> */
+    public static function invalidValues(): array
+    {
+        return [
+            [(object) ['foo' => 'bar']],
+            [['baz']],
+            [1],
+            [1.5],
+            [true],
+            [null],
+            [false],
+        ];
+    }
+
+    #[DataProvider('invalidValues')]
+    public function testInvalidInput(mixed $input): void
+    {
+        $validator = new DateTimeValidator([
+            'locale'   => 'en',
+            'timezone' => 'Europe/London',
+        ]);
+
+        self::assertFalse($validator->isValid($input));
+        $messages = $validator->getMessages();
+        self::assertArrayHasKey(DateTimeValidator::INVALID, $messages);
+    }
+
+    public function testMessagesCanBeCustomised(): void
+    {
+        $validator = new DateTimeValidator([
+            'locale'   => 'en',
+            'timezone' => 'UTC',
+            'messages' => [
+                DateTimeValidator::INVALID_DATETIME => 'Bad News',
+            ],
+        ]);
+
+        self::assertFalse($validator->isValid('!!'));
+        self::assertSame([
+            DateTimeValidator::INVALID_DATETIME => 'Bad News',
+        ], $validator->getMessages());
     }
 }

@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\I18n\Validator;
 
 use IntlException;
-use Laminas\Stdlib\ArrayUtils;
-use Laminas\Stdlib\StringUtils;
-use Laminas\Stdlib\StringWrapper\StringWrapperInterface;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\Validator\AbstractValidator;
 use Laminas\Validator\Exception;
-use Locale;
+use Laminas\Validator\Exception\InvalidArgumentException;
 use NumberFormatter;
-use Traversable;
 
 use function assert;
 use function intl_is_failure;
@@ -18,110 +17,68 @@ use function is_bool;
 use function is_float;
 use function is_int;
 use function is_scalar;
-use function is_string;
+use function mb_strlen;
+use function mb_strpos;
+use function mb_substr;
 use function preg_match;
 use function preg_quote;
+use function sprintf;
 use function str_replace;
 
-/** @final */
-class IsFloat extends AbstractValidator
+/**
+ * Validates whether input represents a floating point number
+ *
+ * @psalm-type Options = array{
+ *     locale?: non-empty-string,
+ *     messages?: array<string, string>,
+ *     translator?: TranslatorInterface|null,
+ *     translatorTextDomain?: string|null,
+ *     translatorEnabled?: bool,
+ *     valueObscured?: bool,
+ * }
+ */
+final class IsFloat extends AbstractValidator
 {
     public const INVALID   = 'floatInvalid';
     public const NOT_FLOAT = 'notFloat';
 
-    /**
-     * Validation failure message template definitions
-     *
-     * @var array<string, string>
-     */
-    protected $messageTemplates = [
+    /** @var array<string, string> */
+    protected array $messageTemplates = [
         self::INVALID   => 'Invalid type given. String, integer or float expected',
         self::NOT_FLOAT => 'The input does not appear to be a float',
     ];
 
-    /**
-     * Optional locale
-     *
-     * @var string|null
-     */
-    protected $locale;
+    /** @var non-empty-string */
+    private readonly string $locale;
 
-    /**
-     * UTF-8 compatible wrapper for string functions
-     *
-     * @var StringWrapperInterface
-     */
-    protected $wrapper;
-
-    /**
-     * Constructor for the integer validator
-     *
-     * @param iterable<string, mixed> $options
-     */
-    public function __construct($options = [])
+    /** @param Options $options */
+    public function __construct(array $options)
     {
-        $this->wrapper = StringUtils::getWrapper();
-
-        if ($options instanceof Traversable) {
-            $options = ArrayUtils::iteratorToArray($options);
+        $locale = $options['locale'] ?? null;
+        /** @psalm-suppress DocblockTypeContradiction - Defensive check */
+        if ($locale === null || $locale === '') {
+            throw new InvalidArgumentException(
+                'The locale must be provided in the `locale` options key as a non-empty-string',
+            );
         }
 
-        if (isset($options['locale'])) {
-            $this->setLocale($options['locale']);
-        }
+        $this->locale = $locale;
 
         parent::__construct($options);
     }
 
-    /**
-     * Returns the set locale
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        if (null === $this->locale) {
-            $this->locale = Locale::getDefault();
-        }
-        return $this->locale;
-    }
-
-    /**
-     * Sets the locale to use
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $locale
-     * @return $this
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-        return $this;
-    }
-
-    /**
-     * Returns true if and only if $value is a floating-point value. Uses the formal definition of a float as described
-     * in the PHP manual: {@link https://www.php.net/float}
-     *
-     * @param mixed $value
-     * @return bool
-     * @throws Exception\InvalidArgumentException
-     */
-    public function isValid($value)
+    public function isValid(mixed $value): bool
     {
         if (! is_scalar($value) || is_bool($value)) {
             $this->error(self::INVALID);
             return false;
         }
 
-        $this->setValue($value);
-
         if (is_float($value) || is_int($value)) {
             return true;
         }
+
+        $this->setValue($value);
 
         if ($value === '') {
             $this->error(self::NOT_FLOAT);
@@ -130,9 +87,8 @@ class IsFloat extends AbstractValidator
         }
 
         // Need to check if this is scientific formatted string. If not, switch to decimal.
-        $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
-
         try {
+            $formatter = new NumberFormatter($this->locale, NumberFormatter::SCIENTIFIC);
             if (intl_is_failure($formatter->getErrorCode())) {
                 throw new Exception\InvalidArgumentException($formatter->getErrorMessage());
             }
@@ -140,16 +96,11 @@ class IsFloat extends AbstractValidator
             throw new Exception\InvalidArgumentException($intlException->getMessage(), 0, $intlException);
         }
 
-        if (StringUtils::hasPcreUnicodeSupport()) {
-            $exponentialSymbols = '[Ee' . $formatter->getSymbol(NumberFormatter::EXPONENTIAL_SYMBOL) . ']+';
-            $search             = '/' . $exponentialSymbols . '/u';
-        } else {
-            $exponentialSymbols = '[Ee]';
-            $search             = '/' . $exponentialSymbols . '/';
-        }
+        $exponentialSymbols = '[Ee' . $formatter->getSymbol(NumberFormatter::EXPONENTIAL_SYMBOL) . ']+';
+        $search             = '/' . $exponentialSymbols . '/u';
 
         if (! preg_match($search, $value)) {
-            $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
+            $formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
         }
 
         /**
@@ -163,17 +114,17 @@ class IsFloat extends AbstractValidator
         if ($groupSeparator === "\xC2\xA0") {
             $value = str_replace(' ', $groupSeparator, $value);
         } elseif ($groupSeparator === "\xD9\xAC") {
-            //NumberFormatter doesn't have grouping at all for Arabic-Indic
+            // NumberFormatter doesn't have grouping at all for Arabic-Indic
             $value = str_replace(['\'', $groupSeparator], '', $value);
         }
 
-        //ARABIC DECIMAL SEPARATOR
+        // ARABIC DECIMAL SEPARATOR
         if ($decSeparator === "\xD9\xAB") {
             $value = str_replace(',', $decSeparator, $value);
         }
 
-        $groupSeparatorPosition = $this->wrapper->strpos($value, $groupSeparator);
-        $decSeparatorPosition   = $this->wrapper->strpos($value, $decSeparator);
+        $groupSeparatorPosition = mb_strpos($value, $groupSeparator);
+        $decSeparatorPosition   = mb_strpos($value, $decSeparator);
 
         //We have separators, and they are flipped. i.e. 2.000,000 for en-US
         if (
@@ -187,38 +138,25 @@ class IsFloat extends AbstractValidator
         }
 
         //If we have Unicode support, we can use the real graphemes, otherwise, just the ASCII characters
-        $decimal     = '[' . preg_quote($decSeparator, '/') . ']';
-        $prefix      = '[+-]';
-        $exp         = $exponentialSymbols;
-        $numberRange = '0-9';
-        $useUnicode  = '';
-        $suffix      = '';
-
-        if (StringUtils::hasPcreUnicodeSupport()) {
-            $prefix      = '['
-                . preg_quote(
-                    $formatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX)
-                    . $formatter->getTextAttribute(NumberFormatter::NEGATIVE_PREFIX)
-                    . $formatter->getSymbol(NumberFormatter::PLUS_SIGN_SYMBOL)
-                    . $formatter->getSymbol(NumberFormatter::MINUS_SIGN_SYMBOL),
-                    '/'
-                )
-                . ']{0,3}';
-            $suffix      = $formatter->getTextAttribute(NumberFormatter::NEGATIVE_SUFFIX);
-            $suffix      = $suffix !== false
-                ? '['
-                    . preg_quote(
-                        $formatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX)
-                        . $formatter->getTextAttribute(NumberFormatter::NEGATIVE_SUFFIX)
-                        . $formatter->getSymbol(NumberFormatter::PLUS_SIGN_SYMBOL)
-                        . $formatter->getSymbol(NumberFormatter::MINUS_SIGN_SYMBOL),
-                        '/'
-                    )
-                    . ']{0,3}'
-                : '';
-            $numberRange = '\p{N}';
-            $useUnicode  = 'u';
-        }
+        $decimal = '[' . preg_quote($decSeparator, '/') . ']';
+        $exp     = $exponentialSymbols;
+        $prefix  = sprintf('[%s]{0,3}', preg_quote(
+            $formatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX)
+            . $formatter->getTextAttribute(NumberFormatter::NEGATIVE_PREFIX)
+            . $formatter->getSymbol(NumberFormatter::PLUS_SIGN_SYMBOL)
+            . $formatter->getSymbol(NumberFormatter::MINUS_SIGN_SYMBOL),
+            '/',
+        ));
+        $suffix  = $formatter->getTextAttribute(NumberFormatter::NEGATIVE_SUFFIX);
+        assert($suffix !== false);
+        $suffix      = sprintf('[%s]{0,3}', preg_quote(
+            $formatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX)
+            . $formatter->getTextAttribute(NumberFormatter::NEGATIVE_SUFFIX)
+            . $formatter->getSymbol(NumberFormatter::PLUS_SIGN_SYMBOL)
+            . $formatter->getSymbol(NumberFormatter::MINUS_SIGN_SYMBOL),
+            '/'
+        ));
+        $numberRange = '\p{N}';
 
         /**
          * @see https://www.php.net/float
@@ -228,7 +166,7 @@ class IsFloat extends AbstractValidator
          *       systems (Arabic-Indic numbering). I'm also switching out the period
          *       for the decimal separator. The formal definition leaves out +- from
          *       the integer and decimal notations so add that.  This also checks
-         *       that a grouping sperator is not in the last GROUPING_SIZE graphemes
+         *       that a grouping separator is not in the last GROUPING_SIZE graphemes
          *       of the string - i.e. 10,6 is not valid for en-US.
          */
 
@@ -240,9 +178,9 @@ class IsFloat extends AbstractValidator
 
         // LEFT-TO-RIGHT MARK (U+200E) is messing up everything for the handful
         // of locales that have it
-        $lnumSearch     = str_replace("\xE2\x80\x8E", '', '/^' . $prefix . $lnum . $suffix . '$/' . $useUnicode);
-        $dnumSearch     = str_replace("\xE2\x80\x8E", '', '/^' . $prefix . $dnum . $suffix . '$/' . $useUnicode);
-        $expDnumSearch  = str_replace("\xE2\x80\x8E", '', '/^' . $expDnum . '$/' . $useUnicode);
+        $lnumSearch     = str_replace("\xE2\x80\x8E", '', '/^' . $prefix . $lnum . $suffix . '$/u');
+        $dnumSearch     = str_replace("\xE2\x80\x8E", '', '/^' . $prefix . $dnum . $suffix . '$/u');
+        $expDnumSearch  = str_replace("\xE2\x80\x8E", '', '/^' . $expDnum . '$/u');
         $value          = str_replace("\xE2\x80\x8E", '', $value);
         $unGroupedValue = str_replace($groupSeparator, '', $value);
 
@@ -251,11 +189,10 @@ class IsFloat extends AbstractValidator
         $groupSize = $formatter->getAttribute(NumberFormatter::GROUPING_SIZE);
         $groupSize = $groupSize === false ? 3 : $groupSize;
         assert(is_int($groupSize));
-        $lastStringGroup = $this->wrapper->strlen($value) > $groupSize ?
-            $this->wrapper->substr($value, 0 - $groupSize) :
-            $value;
+        $lastStringGroup = mb_strlen($value) > $groupSize
+            ? mb_substr($value, 0 - $groupSize)
+            : $value;
 
-        assert(is_string($lastStringGroup));
         assert($lastStringGroup !== '');
         assert($lnumSearch !== '');
         assert($dnumSearch !== '');
@@ -265,7 +202,7 @@ class IsFloat extends AbstractValidator
             (preg_match($lnumSearch, $unGroupedValue)
             || preg_match($dnumSearch, $unGroupedValue)
             || preg_match($expDnumSearch, $unGroupedValue))
-            && false === $this->wrapper->strpos($lastStringGroup, $groupSeparator)
+            && false === mb_strpos($lastStringGroup, $groupSeparator)
         ) {
             return true;
         }

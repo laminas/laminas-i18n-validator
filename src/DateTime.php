@@ -1,277 +1,96 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\I18n\Validator;
 
 use IntlDateFormatter;
 use IntlException;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\Validator\AbstractValidator;
-use Laminas\Validator\Exception as ValidatorException;
-use Locale;
+use Laminas\Validator\Exception\InvalidArgumentException;
 
-use function date_default_timezone_get;
 use function intl_is_failure;
 use function is_string;
 
-/** @final */
-class DateTime extends AbstractValidator
+/**
+ * Validate that the input is a date
+ *
+ * @psalm-type Options = array{
+ *     locale: non-empty-string,
+ *     timezone: non-empty-string,
+ *     pattern?: string,
+ *     dateType?: int,
+ *     timeType?: int,
+ *     calendar?: int,
+ *     messages?: array<string, string>,
+ *     translator?: TranslatorInterface|null,
+ *     translatorTextDomain?: string|null,
+ *     translatorEnabled?: bool,
+ *     valueObscured?: bool,
+ * }
+ */
+final class DateTime extends AbstractValidator
 {
     public const INVALID          = 'datetimeInvalid';
     public const INVALID_DATETIME = 'datetimeInvalidDateTime';
 
-    /**
-     * Validation failure message template definitions
-     *
-     * @var array<string, string>
-     */
-    protected $messageTemplates = [
+    /** @var array<string, string> */
+    protected array $messageTemplates = [
         self::INVALID          => 'Invalid type given. String expected',
         self::INVALID_DATETIME => 'The input does not appear to be a valid datetime',
     ];
 
-    /**
-     * Optional locale
-     *
-     * @var string|null
-     */
-    protected $locale;
+    /** @var non-empty-string */
+    private readonly string $locale;
+    private readonly int $calendar;
+    private readonly int $dateType;
+    private readonly int $timeType;
+    /** @var non-empty-string */
+    private readonly string $timezone;
+    private readonly string $pattern;
+    private IntlDateFormatter $formatter;
 
-    /** @var int|null */
-    protected $dateType;
-
-    /** @var int|null */
-    protected $timeType;
-
-    /**
-     * Optional timezone
-     *
-     * @var string|null
-     */
-    protected $timezone;
-
-    /** @var string|null */
-    protected $pattern;
-
-    /** @var int|null */
-    protected $calendar;
-
-    /** @var IntlDateFormatter|null */
-    protected $formatter;
-
-    /**
-     * Is the formatter invalidated
-     * Invalidation occurs when immutable properties are changed
-     *
-     * @var bool
-     */
-    protected $invalidateFormatter = false;
-
-    /**
-     * Constructor for the Date validator
-     *
-     * @param iterable<string, mixed> $options
-     */
-    public function __construct($options = [])
+    /** @param Options $options */
+    public function __construct(array $options)
     {
-        // Delaying initialization until we know ext/intl is available
-        $this->dateType = IntlDateFormatter::NONE;
-        $this->timeType = IntlDateFormatter::NONE;
-        $this->calendar = IntlDateFormatter::GREGORIAN;
+        $locale = $options['locale'] ?? null;
+        /** @psalm-suppress DocblockTypeContradiction - Defensive check */
+        if ($locale === null || $locale === '') {
+            throw new InvalidArgumentException(
+                'The locale must be provided in the `locale` options key as a non-empty-string',
+            );
+        }
+
+        $timezone = $options['timezone'] ?? null;
+        /** @psalm-suppress DocblockTypeContradiction - Defensive check */
+        if ($timezone === null || $timezone === '') {
+            throw new InvalidArgumentException(
+                'The desired timezone must be provided in the `timezone` options key as a non-empty-string',
+            );
+        }
+
+        $this->locale   = $locale;
+        $this->timezone = $timezone;
+        $this->dateType = $options['dateType'] ?? IntlDateFormatter::NONE;
+        $this->timeType = $options['timeType'] ?? IntlDateFormatter::NONE;
+        $this->calendar = $options['calendar'] ?? IntlDateFormatter::GREGORIAN;
+        $this->pattern  = $options['pattern'] ?? '';
+
+        try {
+            $this->formatter = $this->getIntlDateFormatter();
+
+            if (intl_is_failure($this->formatter->getErrorCode())) {
+                throw new InvalidArgumentException($this->formatter->getErrorMessage());
+            }
+        } catch (IntlException $intlException) {
+            throw new InvalidArgumentException($intlException->getMessage(), 0, $intlException);
+        }
 
         parent::__construct($options);
-
-        if (null === $this->locale) {
-            $this->locale = Locale::getDefault();
-        }
-        if (null === $this->timezone) {
-            $this->timezone = date_default_timezone_get();
-        }
     }
 
-    /**
-     * Sets the calendar to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param int|null $calendar
-     * @return $this
-     */
-    public function setCalendar($calendar)
-    {
-        $this->calendar = $calendar;
-
-        return $this;
-    }
-
-    /**
-     * Returns the calendar to by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return int|null
-     */
-    public function getCalendar()
-    {
-        if ($this->formatter && ! $this->invalidateFormatter) {
-            return $this->getIntlDateFormatter()->getCalendar();
-        }
-
-        return $this->calendar;
-    }
-
-    /**
-     * Sets the date format to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param int|null $dateType
-     * @return $this
-     */
-    public function setDateType($dateType)
-    {
-        $this->dateType            = $dateType;
-        $this->invalidateFormatter = true;
-
-        return $this;
-    }
-
-    /**
-     * Returns the date format used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return int|null
-     */
-    public function getDateType()
-    {
-        return $this->dateType;
-    }
-
-    /**
-     * Sets the pattern to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $pattern
-     * @return $this
-     */
-    public function setPattern($pattern)
-    {
-        $this->pattern = $pattern;
-
-        return $this;
-    }
-
-    /**
-     * Returns the pattern used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string|null
-     */
-    public function getPattern()
-    {
-        if ($this->formatter && ! $this->invalidateFormatter) {
-            return $this->getIntlDateFormatter()->getPattern();
-        }
-
-        return $this->pattern;
-    }
-
-    /**
-     * Sets the time format to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param int|null $timeType
-     * @return $this
-     */
-    public function setTimeType($timeType)
-    {
-        $this->timeType            = $timeType;
-        $this->invalidateFormatter = true;
-
-        return $this;
-    }
-
-    /**
-     * Returns the time format used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return int|null
-     */
-    public function getTimeType()
-    {
-        return $this->timeType;
-    }
-
-    /**
-     * Sets the timezone to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $timezone
-     * @return $this
-     */
-    public function setTimezone($timezone)
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    /**
-     * Returns the timezone used by the IntlDateFormatter or the system default if none given
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string|null
-     */
-    public function getTimezone()
-    {
-        if ($this->formatter && ! $this->invalidateFormatter) {
-            return $this->getIntlDateFormatter()->getTimeZoneId();
-        }
-
-        return $this->timezone;
-    }
-
-    /**
-     * Sets the locale to be used by the IntlDateFormatter
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param string|null $locale
-     * @return $this
-     */
-    public function setLocale($locale)
-    {
-        $this->locale              = $locale;
-        $this->invalidateFormatter = true;
-
-        return $this;
-    }
-
-    /**
-     * Returns the locale used by the IntlDateFormatter or the system default if none given
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return string|null
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-     * Returns true if and only if $value is a floating-point value
-     *
-     * @param  string $value
-     * @return bool
-     * @throws ValidatorException\InvalidArgumentException
-     */
-    public function isValid($value)
+    public function isValid(mixed $value): bool
     {
         if (! is_string($value)) {
             $this->error(self::INVALID);
@@ -282,26 +101,15 @@ class DateTime extends AbstractValidator
         $this->setValue($value);
 
         try {
-            $formatter = $this->getIntlDateFormatter();
+            // Suppressing the warning because it is handled by `intl_is_failure`
+            $timestamp = @$this->formatter->parse($value);
 
-            if (intl_is_failure($formatter->getErrorCode())) {
-                throw new ValidatorException\InvalidArgumentException($formatter->getErrorMessage());
-            }
-        } catch (IntlException $intlException) {
-            throw new ValidatorException\InvalidArgumentException($intlException->getMessage(), 0, $intlException);
-        }
-
-        try {
-            $timestamp = $formatter->parse($value);
-
-            if (intl_is_failure($formatter->getErrorCode()) || $timestamp === false) {
+            if (intl_is_failure($this->formatter->getErrorCode()) || $timestamp === false) {
                 $this->error(self::INVALID_DATETIME);
-                $this->invalidateFormatter = true;
                 return false;
             }
         } catch (IntlException) {
             $this->error(self::INVALID_DATETIME);
-            $this->invalidateFormatter = true;
             return false;
         }
 
@@ -309,31 +117,21 @@ class DateTime extends AbstractValidator
     }
 
     /**
-     * Returns a non lenient configured IntlDateFormatter
-     *
-     * @return IntlDateFormatter
+     * Returns a non-lenient configured IntlDateFormatter
      */
-    protected function getIntlDateFormatter()
+    private function getIntlDateFormatter(): IntlDateFormatter
     {
-        if ($this->formatter === null || $this->invalidateFormatter) {
-            $this->formatter = new IntlDateFormatter(
-                $this->getLocale(),
-                $this->getDateType(),
-                $this->getTimeType(),
-                $this->timezone,
-                $this->calendar,
-                $this->pattern ?? ''
-            );
+        $formatter = new IntlDateFormatter(
+            $this->locale,
+            $this->dateType,
+            $this->timeType,
+            $this->timezone,
+            $this->calendar,
+            $this->pattern,
+        );
 
-            $this->formatter->setLenient(false);
+        $formatter->setLenient(false);
 
-            $this->setTimezone($this->formatter->getTimezone());
-            $this->setCalendar($this->formatter->getCalendar());
-            $this->setPattern($this->formatter->getPattern());
-
-            $this->invalidateFormatter = false;
-        }
-
-        return $this->formatter;
+        return $formatter;
     }
 }

@@ -1,118 +1,96 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\I18n\Validator;
 
-use Laminas\I18n\Filter\Alnum as AlnumFilter;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\Validator\AbstractValidator;
+use Laminas\Validator\Exception\InvalidArgumentException;
+use Locale;
+use Stringable;
 
-use function is_array;
-use function is_bool;
+use function in_array;
 use function is_float;
 use function is_int;
-use function is_scalar;
 use function is_string;
+use function preg_replace;
 
-/** @final */
-class Alnum extends AbstractValidator
+/**
+ * Validates whether input contains only alphanumeric characters and optionally whitespace
+ *
+ * @psalm-type Options = array{
+ *     allowWhiteSpace?: bool,
+ *     locale?: non-empty-string,
+ *     messages?: array<string, string>,
+ *     translator?: TranslatorInterface|null,
+ *     translatorTextDomain?: string|null,
+ *     translatorEnabled?: bool,
+ *     valueObscured?: bool,
+ * }
+ */
+final class Alnum extends AbstractValidator
 {
     public const INVALID      = 'alnumInvalid';
     public const NOT_ALNUM    = 'notAlnum';
     public const STRING_EMPTY = 'alnumStringEmpty';
 
-    /**
-     * Alphanumeric filter used for validation
-     *
-     * @var AlnumFilter|null
-     */
-    protected static $filter;
-
-    /**
-     * Validation failure message template definitions
-     *
-     * @var array<string, string>
-     */
-    protected $messageTemplates = [
+    /** @var array<string, string> */
+    protected array $messageTemplates = [
         self::INVALID      => 'Invalid type given. String, integer or float expected',
-        self::NOT_ALNUM    => 'The input contains characters which are non alphabetic and no digits',
+        self::NOT_ALNUM    => 'The input contains characters which are non-alphabetic and not digits',
         self::STRING_EMPTY => 'The input is an empty string',
     ];
 
-    /**
-     * Options for this validator
-     *
-     * @var array<string, mixed>
-     */
-    protected $options = [
-        'allowWhiteSpace' => false, // Whether to allow white space characters; off by default
-    ];
+    private readonly bool $allowWhiteSpace;
+    /** @var non-empty-string */
+    private readonly string $locale;
 
-    /**
-     * Sets default option values for this instance
-     *
-     * @param array{allowWhiteSpace: bool}|bool $allowWhiteSpace
-     */
-    public function __construct($allowWhiteSpace = false)
+    /** @param Options $options */
+    public function __construct(array $options = [])
     {
-        $options = is_array($allowWhiteSpace) ? $allowWhiteSpace : null;
-        parent::__construct($options);
-
-        if (is_scalar($allowWhiteSpace)) {
-            $this->options['allowWhiteSpace'] = (bool) $allowWhiteSpace;
+        $locale = $options['locale'] ?? null;
+        /** @psalm-suppress DocblockTypeContradiction - Defensive check */
+        if ($locale === null || $locale === '') {
+            throw new InvalidArgumentException(
+                'The locale must be provided in the `locale` options key as a non-empty-string',
+            );
         }
+
+        $this->locale          = $locale;
+        $this->allowWhiteSpace = $options['allowWhiteSpace'] ?? false;
+
+        parent::__construct($options);
     }
 
-    /**
-     * Returns the allowWhiteSpace option
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0
-     *
-     * @return bool
-     */
-    public function getAllowWhiteSpace()
+    public function isValid(mixed $value): bool
     {
-        return is_bool($this->options['allowWhiteSpace']) && $this->options['allowWhiteSpace'];
-    }
-
-    /**
-     * Sets the allowWhiteSpace option
-     *
-     * @deprecated Since 2.28.0 - This method will be removed in 3.0. Provide options to the constructor instead.
-     *
-     * @param bool $allowWhiteSpace
-     * @return $this
-     */
-    public function setAllowWhiteSpace($allowWhiteSpace)
-    {
-        $this->options['allowWhiteSpace'] = (bool) $allowWhiteSpace;
-        return $this;
-    }
-
-    /**
-     * Returns true if and only if $value contains only alphabetic and digit characters
-     *
-     * @param mixed $value
-     * @return bool
-     */
-    public function isValid($value)
-    {
-        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
+        if (! is_string($value) && ! is_int($value) && ! is_float($value) && ! $value instanceof Stringable) {
             $this->error(self::INVALID);
             return false;
         }
 
+        $value = (string) $value;
+
         $this->setValue($value);
-        if ('' === $value) {
+        if ($value === '') {
             $this->error(self::STRING_EMPTY);
             return false;
         }
 
-        if (null === static::$filter) {
-            static::$filter = new AlnumFilter();
+        $whiteSpace = $this->allowWhiteSpace ? '\s' : '';
+        $language   = Locale::getPrimaryLanguage($this->locale);
+
+        if (in_array($language, ['ja', 'ko', 'zh'], true)) {
+            // Use english alphabet
+            $pattern = '/[^a-zA-Z0-9' . $whiteSpace . ']/u';
+        } else {
+            // Use native language alphabet
+            $pattern = '/[^\p{L}\p{N}' . $whiteSpace . ']/u';
         }
 
-        static::$filter->setAllowWhiteSpace($this->getAllowWhiteSpace());
-
-        if ($value != static::$filter->filter($value)) { // phpcs:ignore
+        $filtered = preg_replace($pattern, '', $value);
+        if ($filtered !== $value) {
             $this->error(self::NOT_ALNUM);
             return false;
         }

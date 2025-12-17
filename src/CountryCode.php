@@ -17,7 +17,7 @@ final class CountryCode extends AbstractValidator
     public const INVALID      = 'invalid';
 
     /** @var array<string, string> */
-    protected $messageTemplates = [
+    protected array $messageTemplates = [
         self::NOT_STRING   => 'Invalid type given. String expected',
         self::EMPTY_STRING => 'Country codes must be non-empty strings',
         self::INVALID      => '"%value%" is not a valid ISO-3166 country code',
