@@ -13,8 +13,8 @@
         "ext-mbstring": "*",
         "laminas/laminas-i18n": "^3.0.x-dev",
         "laminas/laminas-servicemanager": "^4.5.0",
-        "laminas/laminas-translator": "^2.0.x-dev",
-        "laminas/laminas-validator": "dev-translator-v2",
+        "laminas/laminas-translator": "^2.0",
+        "laminas/laminas-validator": "^3.17.0",
         "psr/container": "^1.0 || ^2.0"
     },
     "require-dev": {
@@ -31,11 +31,5 @@
         "psr-4": {
             "LaminasTest\\I18n\\Filter\\": "../../test/"
         }
-    },
-    "repositories": [
-        {
-            "type": "github",
-            "url": "https://github.com/gsteel/laminas-validator"
-        }
-    ]
+    }
 }
