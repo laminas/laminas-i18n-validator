@@ -19,14 +19,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
 
         with:
           php-version: ${{ env.default_php }}
           ini-values: memory_limit=-1
           extensions: ${{ env.php_extensions }}
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - run: make require-checker-ci
 
   test-with-intl-exceptions:
@@ -34,51 +34,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
 
         with:
           php-version: ${{ env.default_php }}
           ini-values: memory_limit=-1,intl.use_exceptions=1
           extensions: ${{ env.php_extensions }}
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - run: vendor/bin/phpunit
 
   composer-unused:
     name: Check for Unused Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
         with:
           php-version: ${{ env.default_php }}
           extensions: ${{ env.php_extensions }}
           tools: composer
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - run: make unused-ci
 
   mutation-tests:
     name: "Mutation Tests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
         with:
           php-version: ${{ env.default_php }}
           coverage: xdebug
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - run: make infection-ci
 
   psalm-security-report:
     name: "Psalm Security Report"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
         with:
           php-version: ${{ env.default_php }}
           extensions: ${{ env.php_extensions }}
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - name: "Psalm"
         run: vendor/bin/psalm --report=results.sarif
       - name: "Upload Security Analysis results to GitHub"
@@ -90,11 +90,11 @@ jobs:
     name: Rector on Default PHP
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: shivammathur/setup-php@2.36.0
         with:
           php-version: ${{ env.default_php }}
           extensions: ${{ env.php_extensions }}
           tools: composer
-      - uses: ramsey/composer-install@3.1.1
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f # 3.2.1
       - run: make rector-ci
