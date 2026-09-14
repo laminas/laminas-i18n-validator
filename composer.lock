@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64fa567b93d6e75bbf226cfd67ddf95a",
+    "content-hash": "f29e09ca5c11ff35654196f8ee6688a0",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -57,16 +57,16 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "3.1.x-dev",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "37073108ae855ac6a474e16cd9e993343c5453e9"
+                "reference": "64df599ed860a93433bfc5e66780a05793be8808"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/37073108ae855ac6a474e16cd9e993343c5453e9",
-                "reference": "37073108ae855ac6a474e16cd9e993343c5453e9",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/64df599ed860a93433bfc5e66780a05793be8808",
+                "reference": "64df599ed860a93433bfc5e66780a05793be8808",
                 "shasum": ""
             },
             "require": {
@@ -82,8 +82,7 @@
                 "psr/simple-cache": "^3.0"
             },
             "conflict": {
-                "laminas/laminas-view": "<2.20.0",
-                "psalm/plugin-phpunit": "^0.20.0"
+                "laminas/laminas-view": "<2.20.0"
             },
             "require-dev": {
                 "laminas/laminas-cache": "^4.3.0",
@@ -92,7 +91,7 @@
                 "phpbench/phpbench": "^1.7.0",
                 "phpunit/phpunit": "^11.5.56",
                 "psalm/plugin-phpunit": "^0.19.7",
-                "vimeo/psalm": "^6.17.1"
+                "vimeo/psalm": "^6.16.1"
             },
             "suggest": {
                 "laminas/laminas-cache": "Provides a PSR-6 cache implementation for caching translations",
@@ -100,7 +99,6 @@
                 "laminas/laminas-i18n-resources": "This package provides validator and captcha translations",
                 "psr/event-dispatcher-implementation": "You should install a PSR-14 event dispatcher to use the events in the translator"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -137,7 +135,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-09-14T20:57:35+00:00"
+            "time": "2026-08-14T09:11:47+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",
@@ -6007,9 +6005,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "laminas/laminas-i18n": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
