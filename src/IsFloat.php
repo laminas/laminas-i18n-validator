@@ -23,6 +23,7 @@ use function mb_substr;
 use function preg_match;
 use function preg_quote;
 use function sprintf;
+use function str_contains;
 use function str_replace;
 
 /**
@@ -202,7 +203,7 @@ final class IsFloat extends AbstractValidator
             (preg_match($lnumSearch, $unGroupedValue)
             || preg_match($dnumSearch, $unGroupedValue)
             || preg_match($expDnumSearch, $unGroupedValue))
-            && false === mb_strpos($lastStringGroup, $groupSeparator)
+            && ! str_contains($lastStringGroup, $groupSeparator)
         ) {
             return true;
         }
