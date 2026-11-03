@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f29e09ca5c11ff35654196f8ee6688a0",
+    "content-hash": "5e8298aae0eabe688da369dc080353dc",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -53,8 +53,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-20T17:42:39+00:00",
-            "published-time": "2025-02-20T17:52:38+00:00"
+            "time": "2025-02-20T17:42:39+00:00"
         },
         {
             "name": "laminas/laminas-i18n",
@@ -136,8 +135,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-14T09:11:47+00:00",
-            "published-time": "2026-09-14T20:01:24+00:00"
+            "time": "2026-08-14T09:11:47+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",
@@ -222,8 +220,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2026-05-12T09:53:32+00:00",
-            "published-time": "2026-05-12T09:57:04+00:00"
+            "time": "2026-05-12T09:53:32+00:00"
         },
         {
             "name": "laminas/laminas-stdlib",
@@ -282,8 +279,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-10-11T18:13:12+00:00",
-            "published-time": "2025-10-11T18:14:19+00:00"
+            "time": "2025-10-11T18:13:12+00:00"
         },
         {
             "name": "laminas/laminas-translator",
@@ -337,21 +333,20 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2026-06-02T11:36:39+00:00",
-            "published-time": "2026-06-02T11:37:21+00:00"
+            "time": "2026-06-02T11:36:39+00:00"
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "3.19.0",
+            "version": "3.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "98fb22b3965c322f5087856dcc4a702c3e3b0b70"
+                "reference": "f9ba7397fe911e7b49641673ae264b44943c15ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/98fb22b3965c322f5087856dcc4a702c3e3b0b70",
-                "reference": "98fb22b3965c322f5087856dcc4a702c3e3b0b70",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/f9ba7397fe911e7b49641673ae264b44943c15ca",
+                "reference": "f9ba7397fe911e7b49641673ae264b44943c15ca",
                 "shasum": ""
             },
             "require": {
@@ -417,8 +412,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-10-28T10:53:16+00:00",
-            "published-time": "2026-10-28T10:54:23+00:00"
+            "time": "2026-11-02T11:49:41+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -475,8 +469,7 @@
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.9.0"
             },
-            "time": "2026-09-13T18:51:52+00:00",
-            "published-time": "2026-09-13T18:53:16+00:00"
+            "time": "2026-09-13T18:51:52+00:00"
         },
         {
             "name": "psr/cache",
@@ -525,8 +518,7 @@
             "support": {
                 "source": "https://github.com/php-fig/cache/tree/3.0.0"
             },
-            "time": "2021-02-03T23:26:27+00:00",
-            "published-time": "2021-02-03T23:27:34+00:00"
+            "time": "2021-02-03T23:26:27+00:00"
         },
         {
             "name": "psr/container",
@@ -579,8 +571,7 @@
                 "issues": "https://github.com/php-fig/container/issues",
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
-            "time": "2021-11-05T16:47:00+00:00",
-            "published-time": "2021-11-05T16:53:27+00:00"
+            "time": "2021-11-05T16:47:00+00:00"
         },
         {
             "name": "psr/event-dispatcher",
@@ -630,8 +621,7 @@
                 "issues": "https://github.com/php-fig/event-dispatcher/issues",
                 "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
             },
-            "time": "2019-01-08T18:20:26+00:00",
-            "published-time": "2019-03-25T15:31:44+00:00"
+            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "psr/http-client",
@@ -683,8 +673,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-09-23T14:17:50+00:00",
-            "published-time": "2023-09-23T14:18:12+00:00"
+            "time": "2023-09-23T14:17:50+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -739,8 +728,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-factory"
             },
-            "time": "2024-04-15T12:06:14+00:00",
-            "published-time": "2024-05-10T07:32:19+00:00"
+            "time": "2024-04-15T12:06:14+00:00"
         },
         {
             "name": "psr/http-message",
@@ -793,8 +781,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-message/tree/2.0"
             },
-            "time": "2023-04-04T09:54:51+00:00",
-            "published-time": "2023-04-04T09:55:35+00:00"
+            "time": "2023-04-04T09:54:51+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -845,8 +832,7 @@
             "support": {
                 "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
             },
-            "time": "2021-10-29T13:26:27+00:00",
-            "published-time": "2021-10-29T13:27:19+00:00"
+            "time": "2021-10-29T13:26:27+00:00"
         }
     ],
     "packages-dev": [
@@ -929,8 +915,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-19T17:59:20+00:00",
-            "published-time": "2026-07-26T14:55:09+00:00"
+            "time": "2026-07-19T17:59:20+00:00"
         },
         {
             "name": "amphp/byte-stream",
@@ -1005,8 +990,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-31T19:10:04+00:00",
-            "published-time": "2026-10-31T19:16:39+00:00"
+            "time": "2026-10-31T19:10:04+00:00"
         },
         {
             "name": "amphp/cache",
@@ -1071,8 +1055,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-19T03:38:06+00:00",
-            "published-time": "2024-04-19T03:40:51+00:00"
+            "time": "2024-04-19T03:38:06+00:00"
         },
         {
             "name": "amphp/dns",
@@ -1161,8 +1144,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-31T19:53:43+00:00",
-            "published-time": "2026-10-31T19:59:04+00:00"
+            "time": "2026-10-31T19:53:43+00:00"
         },
         {
             "name": "amphp/parallel",
@@ -1246,8 +1228,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-16T16:54:01+00:00",
-            "published-time": "2026-05-16T17:04:58+00:00"
+            "time": "2026-05-16T16:54:01+00:00"
         },
         {
             "name": "amphp/parser",
@@ -1309,8 +1290,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-21T19:16:53+00:00",
-            "published-time": "2024-03-21T19:18:30+00:00"
+            "time": "2024-03-21T19:16:53+00:00"
         },
         {
             "name": "amphp/pipeline",
@@ -1377,8 +1357,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-26T14:50:43+00:00",
-            "published-time": "2026-07-26T15:13:19+00:00"
+            "time": "2026-07-26T14:50:43+00:00"
         },
         {
             "name": "amphp/process",
@@ -1446,8 +1425,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-01T22:46:42+00:00",
-            "published-time": "2026-11-01T22:48:18+00:00"
+            "time": "2026-11-01T22:46:42+00:00"
         },
         {
             "name": "amphp/serialization",
@@ -1514,8 +1492,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-05T15:59:53+00:00",
-            "published-time": "2026-04-05T16:03:16+00:00"
+            "time": "2026-04-05T15:59:53+00:00"
         },
         {
             "name": "amphp/socket",
@@ -1599,8 +1576,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-22T18:13:20+00:00",
-            "published-time": "2026-08-22T20:37:31+00:00"
+            "time": "2026-08-22T18:13:20+00:00"
         },
         {
             "name": "amphp/sync",
@@ -1675,8 +1651,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-14T17:37:39+00:00",
-            "published-time": "2026-10-31T17:39:05+00:00"
+            "time": "2026-06-14T17:37:39+00:00"
         },
         {
             "name": "composer/pcre",
@@ -1752,8 +1727,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-07T11:47:49+00:00",
-            "published-time": "2026-06-11T12:12:37+00:00"
+            "time": "2026-06-07T11:47:49+00:00"
         },
         {
             "name": "composer/semver",
@@ -1830,8 +1804,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-29T09:13:34+00:00",
-            "published-time": "2026-10-29T09:14:11+00:00"
+            "time": "2026-10-29T09:13:34+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -1897,8 +1870,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-06T16:37:16+00:00",
-            "published-time": "2024-05-06T17:01:42+00:00"
+            "time": "2024-05-06T16:37:16+00:00"
         },
         {
             "name": "danog/advanced-json-rpc",
@@ -1950,8 +1922,7 @@
                 "issues": "https://github.com/danog/php-advanced-json-rpc/issues",
                 "source": "https://github.com/danog/php-advanced-json-rpc/tree/v3.2.3"
             },
-            "time": "2026-01-12T21:07:10+00:00",
-            "published-time": "2026-01-12T21:08:03+00:00"
+            "time": "2026-01-12T21:07:10+00:00"
         },
         {
             "name": "daverandom/libdns",
@@ -1995,8 +1966,7 @@
                 "issues": "https://github.com/DaveRandom/LibDNS/issues",
                 "source": "https://github.com/DaveRandom/LibDNS/tree/v2.1.0"
             },
-            "time": "2024-04-12T12:12:48+00:00",
-            "published-time": "2024-04-13T16:58:48+00:00"
+            "time": "2024-04-12T12:12:48+00:00"
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -2092,8 +2062,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2026-05-06T08:26:05+00:00",
-            "published-time": "2026-05-06T12:56:03+00:00"
+            "time": "2026-05-06T08:26:05+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2130,8 +2099,7 @@
                 "issues": "https://github.com/dnoegel/php-xdg-base-dir/issues",
                 "source": "https://github.com/dnoegel/php-xdg-base-dir/tree/v0.1.1"
             },
-            "time": "2019-12-04T15:06:13+00:00",
-            "published-time": "2019-12-04T16:08:16+00:00"
+            "time": "2019-12-04T15:06:13+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -2179,8 +2147,7 @@
                 "issues": "https://github.com/doctrine/deprecations/issues",
                 "source": "https://github.com/doctrine/deprecations/tree/1.1.6"
             },
-            "time": "2026-02-07T07:09:04+00:00",
-            "published-time": "2026-02-07T07:10:09+00:00"
+            "time": "2026-02-07T07:09:04+00:00"
         },
         {
             "name": "felixfbecker/language-server-protocol",
@@ -2236,8 +2203,7 @@
                 "issues": "https://github.com/felixfbecker/php-language-server-protocol/issues",
                 "source": "https://github.com/felixfbecker/php-language-server-protocol/tree/v1.5.3"
             },
-            "time": "2024-04-30T00:40:11+00:00",
-            "published-time": "2024-09-25T20:16:58+00:00"
+            "time": "2024-04-30T00:40:11+00:00"
         },
         {
             "name": "fidry/cpu-core-counter",
@@ -2299,8 +2265,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-29T22:11:39+00:00",
-            "published-time": "2026-09-29T22:12:43+00:00"
+            "time": "2026-09-29T22:11:39+00:00"
         },
         {
             "name": "kelunik/certificate",
@@ -2358,8 +2323,7 @@
                 "issues": "https://github.com/kelunik/certificate/issues",
                 "source": "https://github.com/kelunik/certificate/tree/v1.1.3"
             },
-            "time": "2023-02-03T21:26:53+00:00",
-            "published-time": "2023-02-03T21:33:41+00:00"
+            "time": "2023-02-03T21:26:53+00:00"
         },
         {
             "name": "laminas/laminas-coding-standard",
@@ -2412,8 +2376,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-05-13T08:37:04+00:00",
-            "published-time": "2025-05-13T08:38:12+00:00"
+            "time": "2025-05-13T08:37:04+00:00"
         },
         {
             "name": "league/uri",
@@ -2512,8 +2475,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-27T07:14:23+00:00",
-            "published-time": "2026-10-28T08:38:15+00:00"
+            "time": "2026-10-27T07:14:23+00:00"
         },
         {
             "name": "league/uri-interfaces",
@@ -2597,8 +2559,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-27T07:14:23+00:00",
-            "published-time": "2026-10-28T08:38:21+00:00"
+            "time": "2026-10-27T07:14:23+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2658,8 +2619,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-11T10:17:44+00:00",
-            "published-time": "2026-08-11T10:29:20+00:00"
+            "time": "2026-08-11T10:17:44+00:00"
         },
         {
             "name": "netresearch/jsonmapper",
@@ -2710,8 +2670,7 @@
                 "issues": "https://github.com/cweiske/jsonmapper/issues",
                 "source": "https://github.com/cweiske/jsonmapper/tree/v5.0.1"
             },
-            "time": "2026-02-22T16:28:03+00:00",
-            "published-time": "2026-02-22T16:29:33+00:00"
+            "time": "2026-02-22T16:28:03+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -2778,8 +2737,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-03T12:33:53+00:00",
-            "published-time": "2024-03-03T12:39:44+00:00"
+            "time": "2024-03-03T12:33:53+00:00"
         },
         {
             "name": "phar-io/version",
@@ -2830,8 +2788,7 @@
                 "issues": "https://github.com/phar-io/version/issues",
                 "source": "https://github.com/phar-io/version/tree/3.2.1"
             },
-            "time": "2022-02-21T01:04:05+00:00",
-            "published-time": "2022-02-21T01:04:30+00:00"
+            "time": "2022-02-21T01:04:05+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2889,8 +2846,7 @@
                 "issues": "https://github.com/phpDocumentor/ReflectionCommon/issues",
                 "source": "https://github.com/phpDocumentor/ReflectionCommon/tree/2.2.1"
             },
-            "time": "2025-11-10T21:21:55+00:00",
-            "published-time": "2026-09-27T10:14:49+00:00"
+            "time": "2025-11-10T21:21:55+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2955,8 +2911,7 @@
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
                 "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/6.0.3"
             },
-            "time": "2026-03-18T20:49:53+00:00",
-            "published-time": "2026-03-18T20:51:16+00:00"
+            "time": "2026-03-18T20:49:53+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -3014,8 +2969,7 @@
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
                 "source": "https://github.com/phpDocumentor/TypeResolver/tree/2.1.0"
             },
-            "time": "2026-09-27T19:32:54+00:00",
-            "published-time": "2026-09-28T18:39:55+00:00"
+            "time": "2026-09-27T19:32:54+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -3062,8 +3016,7 @@
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
                 "source": "https://github.com/phpstan/phpdoc-parser/tree/2.4.1"
             },
-            "time": "2026-10-30T19:36:28+00:00",
-            "published-time": "2026-10-30T19:37:11+00:00"
+            "time": "2026-10-30T19:36:28+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3153,8 +3106,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-24T07:01:01+00:00",
-            "published-time": "2025-12-24T07:02:33+00:00"
+            "time": "2025-12-24T07:01:01+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3227,8 +3179,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-02T13:52:54+00:00",
-            "published-time": "2026-02-02T13:54:13+00:00"
+            "time": "2026-02-02T13:52:54+00:00"
         },
         {
             "name": "phpunit/php-invoker",
@@ -3292,8 +3243,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T05:07:44+00:00",
-            "published-time": "2024-07-03T05:07:59+00:00"
+            "time": "2024-07-03T05:07:44+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -3353,8 +3303,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T05:08:43+00:00",
-            "published-time": "2024-07-03T05:08:52+00:00"
+            "time": "2024-07-03T05:08:43+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -3414,8 +3363,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T05:09:35+00:00",
-            "published-time": "2024-07-03T05:09:48+00:00"
+            "time": "2024-07-03T05:09:35+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -3509,27 +3457,176 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-05T05:47:54+00:00",
-            "published-time": "2026-10-05T05:48:42+00:00"
+            "time": "2026-10-05T05:47:54+00:00"
         },
         {
-            "name": "psalm/plugin-phpunit",
-            "version": "0.19.7",
+            "name": "psalm/plugin-laravel",
+            "version": "v4.18.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/psalm/psalm-plugin-phpunit.git",
-                "reference": "143f9d5e049fffcdbc0da3fbb99f6149f9d3e2dc"
+                "url": "https://github.com/psalm/psalm-plugin-laravel.git",
+                "reference": "5c29c222182cde574bdca7b300ab3d91d9db9206"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psalm/psalm-plugin-phpunit/zipball/143f9d5e049fffcdbc0da3fbb99f6149f9d3e2dc",
-                "reference": "143f9d5e049fffcdbc0da3fbb99f6149f9d3e2dc",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/5c29c222182cde574bdca7b300ab3d91d9db9206",
+                "reference": "5c29c222182cde574bdca7b300ab3d91d9db9206",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "nikic/php-parser": "^5.0",
+                "php": "^8.2",
+                "psalm/psalm-plugin-api": "^0.4.1",
+                "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "symfony/console": "^6.4 || ^7.0 || ^8.0",
+                "vimeo/psalm": "^7.0"
+            },
+            "conflict": {
+                "laravel/framework": "<12.27 || 13.0.0 || >=13.1 <13.20",
+                "orchestra/testbench-core": "<10.0"
+            },
+            "require-dev": {
+                "alies-dev/psalm-tester": "^0.4",
+                "brianium/paratest": "^7.7",
+                "friendsofphp/php-cs-fixer": "^3.94",
+                "laravel/framework": "^12.27 || ^13.20",
+                "orchestra/testbench-core": "^10.0 || ^11.0",
+                "phpunit/phpunit": "^11.5 || ^12.5 || ^13.0",
+                "ramsey/collection": "^1.3",
+                "rector/rector": "^2.8.3",
+                "symfony/http-foundation": "^7.1 || ^8.0",
+                "symfony/process": "^7.1 || ^8.0"
+            },
+            "bin": [
+                "bin/psalm-laravel"
+            ],
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\LaravelPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\LaravelPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Brown",
+                    "email": "github@muglug.com",
+                    "role": "Original Author"
+                },
+                {
+                    "name": "Alies Lapatsin",
+                    "email": "github@alies.dev",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Psalm plugin for Laravel",
+            "homepage": "https://github.com/psalm/psalm-plugin-laravel",
+            "keywords": [
+                "dev",
+                "laravel",
+                "psalm",
+                "psalm-plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-laravel/issues",
+                "source": "https://github.com/psalm/psalm-plugin-laravel/tree/v4.18.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/alies-dev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-11-03T10:01:51+00:00"
+        },
+        {
+            "name": "psalm/plugin-mockery",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-mockery.git",
+                "reference": "ddff47dd095dc3c47224a3f6bf137e28570ef022"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-mockery/zipball/ddff47dd095dc3c47224a3f6bf137e28570ef022",
+                "reference": "ddff47dd095dc3c47224a3f6bf137e28570ef022",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "composer/semver": "^1.4 || ^2.0 || ^3.0",
+                "php": ">=8.1",
+                "psalm/psalm-plugin-api": "^0.4",
+                "vimeo/psalm": "^7|dev-master"
+            },
+            "conflict": {
+                "mockery/mockery": "<1.0"
+            },
+            "require-dev": {
+                "codeception/codeception": "^5.0",
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0 || ^13.0",
+                "squizlabs/php_codesniffer": "^3.3.1",
+                "weirdan/codeception-psalm-module": "^0.14.1"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\MockeryPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\MockeryPlugin\\": [
+                        "."
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "Psalm plugin for Mockery",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-mockery/issues",
+                "source": "https://github.com/psalm/psalm-plugin-mockery/tree/1.3.2"
+            },
+            "time": "2026-10-28T12:21:43+00:00"
+        },
+        {
+            "name": "psalm/plugin-phpunit",
+            "version": "0.21.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-phpunit.git",
+                "reference": "01a0871ba04710331779a3a80c3caabc5427339c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-phpunit/zipball/01a0871ba04710331779a3a80c3caabc5427339c",
+                "reference": "01a0871ba04710331779a3a80c3caabc5427339c",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
                 "php": ">=8.1",
-                "vimeo/psalm": "dev-master || ^6.10.0"
+                "psalm/psalm-plugin-api": "^0.4"
             },
             "conflict": {
                 "phpspec/prophecy": "<1.20.0",
@@ -3540,6 +3637,7 @@
                 "php": "^7.3 || ^8.0",
                 "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
                 "squizlabs/php_codesniffer": "^3.3.1",
+                "vimeo/psalm": "^7|dev-master",
                 "weirdan/prophecy-shim": "^1.0 || ^2.0"
             },
             "type": "psalm-plugin",
@@ -3566,10 +3664,172 @@
             "description": "Psalm plugin for PHPUnit",
             "support": {
                 "issues": "https://github.com/psalm/psalm-plugin-phpunit/issues",
-                "source": "https://github.com/psalm/psalm-plugin-phpunit/tree/0.19.7"
+                "source": "https://github.com/psalm/psalm-plugin-phpunit/tree/0.21.1"
             },
-            "time": "2025-03-31T18:49:55+00:00",
-            "published-time": "2026-04-15T15:23:09+00:00"
+            "time": "2026-10-20T11:28:19+00:00"
+        },
+        {
+            "name": "psalm/plugin-sabre-event",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-sabre-event.git",
+                "reference": "49eaea05b492526ab4d5f9baeb085f2a7129366a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-sabre-event/zipball/49eaea05b492526ab4d5f9baeb085f2a7129366a",
+                "reference": "49eaea05b492526ab4d5f9baeb085f2a7129366a",
+                "shasum": ""
+            },
+            "require": {
+                "psalm/psalm-plugin-api": "^0.4",
+                "vimeo/psalm": "^7|dev-master"
+            },
+            "conflict": {
+                "sabre/event": "<5.0"
+            },
+            "require-dev": {
+                "sabre/event": "^5",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\SabreEventPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\SabreEventPlugin\\": [
+                        "."
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "Psalm plugin for sabre/event",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-sabre-event/issues",
+                "source": "https://github.com/psalm/psalm-plugin-sabre-event/tree/0.2.1"
+            },
+            "time": "2026-10-28T12:24:48+00:00"
+        },
+        {
+            "name": "psalm/plugin-symfony",
+            "version": "v5.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-symfony.git",
+                "reference": "0ba16aa073e5c9bf2cd73b0c1f4bbdf02afa99a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-symfony/zipball/0ba16aa073e5c9bf2cd73b0c1f4bbdf02afa99a3",
+                "reference": "0ba16aa073e5c9bf2cd73b0c1f4bbdf02afa99a3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "php": ">=8.1",
+                "psalm/psalm-plugin-api": "^0.4",
+                "vimeo/psalm": "^7.0.0-rc13|dev-master"
+            },
+            "conflict": {
+                "fidry/cpu-core-counter": "<1.2",
+                "symfony/expression-language": "<5.0",
+                "symfony/framework-bundle": "<5.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1.8|^2",
+                "doctrine/orm": "^2.9 || ^3.6",
+                "phpunit/phpunit": "~7.5 || ~9.5",
+                "symfony/cache-contracts": "^1.0 || ^2.0 || ^3.0",
+                "symfony/console": "*",
+                "symfony/expression-language": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/form": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/framework-bundle": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/messenger": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/mime": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/security-core": "*",
+                "symfony/serializer": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/validator": "*",
+                "twig/twig": "^2.10 || ^3.0",
+                "weirdan/codeception-psalm-module": "dev-master"
+            },
+            "suggest": {
+                "weirdan/doctrine-psalm-plugin": "If Doctrine is used, it is recommended install this plugin"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\SymfonyPsalmPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\SymfonyPsalmPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Farhad Safarov",
+                    "email": "farhad.safarov@gmail.com"
+                }
+            ],
+            "description": "Psalm Plugin for Symfony",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-symfony/issues",
+                "source": "https://github.com/psalm/psalm-plugin-symfony/tree/v5.9.2"
+            },
+            "time": "2026-11-03T00:10:24+00:00"
+        },
+        {
+            "name": "psalm/psalm-plugin-api",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-api.git",
+                "reference": "e52bdf2825750f2e1bc93f1a516d7e5eb87afad7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-api/zipball/e52bdf2825750f2e1bc93f1a516d7e5eb87afad7",
+                "reference": "e52bdf2825750f2e1bc93f1a516d7e5eb87afad7",
+                "shasum": ""
+            },
+            "conflict": {
+                "vimeo/psalm": "<7.0.0-rc3"
+            },
+            "type": "metapackage",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniil Gentili",
+                    "email": "daniil@daniil.it"
+                }
+            ],
+            "description": "Stable, semantically versioned API for Psalm plugins",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-api/issues",
+                "source": "https://github.com/psalm/psalm-plugin-api/tree/0.4.1"
+            },
+            "time": "2026-10-20T09:28:00+00:00"
         },
         {
             "name": "psr/log",
@@ -3619,8 +3879,7 @@
             "support": {
                 "source": "https://github.com/php-fig/log/tree/3.0.2"
             },
-            "time": "2024-09-11T13:17:53+00:00",
-            "published-time": "2024-09-11T13:21:14+00:00"
+            "time": "2024-09-11T13:17:53+00:00"
         },
         {
             "name": "revolt/event-loop",
@@ -3692,8 +3951,7 @@
                 "issues": "https://github.com/revoltphp/event-loop/issues",
                 "source": "https://github.com/revoltphp/event-loop/tree/v1.0.9"
             },
-            "time": "2026-05-16T17:55:38+00:00",
-            "published-time": "2026-05-16T18:04:08+00:00"
+            "time": "2026-05-16T17:55:38+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -3750,8 +4008,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:41:36+00:00",
-            "published-time": "2024-07-03T04:42:56+00:00"
+            "time": "2024-07-03T04:41:36+00:00"
         },
         {
             "name": "sebastian/code-unit",
@@ -3808,8 +4065,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-19T07:56:08+00:00",
-            "published-time": "2025-03-19T07:56:37+00:00"
+            "time": "2025-03-19T07:56:08+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -3865,8 +4121,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:45:54+00:00",
-            "published-time": "2024-07-03T04:46:11+00:00"
+            "time": "2024-07-03T04:45:54+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -3958,8 +4213,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-24T09:26:40+00:00",
-            "published-time": "2026-01-24T09:27:07+00:00"
+            "time": "2026-01-24T09:26:40+00:00"
         },
         {
             "name": "sebastian/complexity",
@@ -4017,8 +4271,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:49:50+00:00",
-            "published-time": "2024-07-03T04:50:20+00:00"
+            "time": "2024-07-03T04:49:50+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -4085,8 +4338,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:53:05+00:00",
-            "published-time": "2024-07-03T04:53:18+00:00"
+            "time": "2024-07-03T04:53:05+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -4162,8 +4414,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-21T11:55:47+00:00",
-            "published-time": "2025-05-21T11:56:27+00:00"
+            "time": "2025-05-21T11:55:47+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -4253,8 +4504,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-24T06:12:51+00:00",
-            "published-time": "2025-09-24T06:14:38+00:00"
+            "time": "2025-09-24T06:12:51+00:00"
         },
         {
             "name": "sebastian/global-state",
@@ -4316,8 +4566,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:57:36+00:00",
-            "published-time": "2024-07-03T04:57:52+00:00"
+            "time": "2024-07-03T04:57:36+00:00"
         },
         {
             "name": "sebastian/lines-of-code",
@@ -4375,8 +4624,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T04:58:38+00:00",
-            "published-time": "2024-07-03T04:58:50+00:00"
+            "time": "2024-07-03T04:58:38+00:00"
         },
         {
             "name": "sebastian/object-enumerator",
@@ -4434,8 +4682,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T05:00:13+00:00",
-            "published-time": "2024-07-03T05:00:34+00:00"
+            "time": "2024-07-03T05:00:13+00:00"
         },
         {
             "name": "sebastian/object-reflector",
@@ -4491,8 +4738,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-03T05:01:32+00:00",
-            "published-time": "2024-07-03T05:01:45+00:00"
+            "time": "2024-07-03T05:01:32+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -4568,8 +4814,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-13T04:42:22+00:00",
-            "published-time": "2025-08-13T04:42:55+00:00"
+            "time": "2025-08-13T04:42:22+00:00"
         },
         {
             "name": "sebastian/type",
@@ -4638,8 +4883,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-09T06:55:48+00:00",
-            "published-time": "2025-08-09T07:00:14+00:00"
+            "time": "2025-08-09T06:55:48+00:00"
         },
         {
             "name": "sebastian/version",
@@ -4693,8 +4937,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-09T05:16:32+00:00",
-            "published-time": "2024-10-09T05:17:00+00:00"
+            "time": "2024-10-09T05:16:32+00:00"
         },
         {
             "name": "slevomat/coding-standard",
@@ -4759,8 +5002,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-13T08:53:30+00:00",
-            "published-time": "2025-09-13T08:55:12+00:00"
+            "time": "2025-09-13T08:53:30+00:00"
         },
         {
             "name": "spatie/array-to-xml",
@@ -4828,8 +5070,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-15T09:00:41+00:00",
-            "published-time": "2025-12-15T09:00:51+00:00"
+            "time": "2025-12-15T09:00:41+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -4908,8 +5149,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2026-08-06T00:17:32+00:00",
-            "published-time": "2026-08-06T01:05:02+00:00"
+            "time": "2026-08-06T00:17:32+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
@@ -4961,8 +5201,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-20T05:08:20+00:00",
-            "published-time": "2024-10-20T05:09:39+00:00"
+            "time": "2024-10-20T05:08:20+00:00"
         },
         {
             "name": "symfony/console",
@@ -5060,8 +5299,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-28T11:08:27+00:00",
-            "published-time": "2026-10-28T18:21:33+00:00"
+            "time": "2026-10-28T11:08:27+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5132,8 +5370,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T06:23:12+00:00",
-            "published-time": "2026-06-27T21:46:34+00:00"
+            "time": "2026-06-05T06:23:12+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -5203,8 +5440,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-06T20:05:19+00:00",
-            "published-time": "2026-10-14T06:45:33+00:00"
+            "time": "2026-10-06T20:05:19+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -5287,8 +5523,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00",
-            "published-time": "2026-04-26T14:44:50+00:00"
+            "time": "2026-04-10T16:19:22+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -5370,8 +5605,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-15T09:18:53+00:00",
-            "published-time": "2026-10-28T10:07:44+00:00"
+            "time": "2026-10-15T09:18:53+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -5456,8 +5690,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-23T22:02:09+00:00",
-            "published-time": "2026-09-30T10:23:47+00:00"
+            "time": "2026-09-23T22:02:09+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -5542,8 +5775,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-28T09:35:49+00:00",
-            "published-time": "2026-10-28T10:07:45+00:00"
+            "time": "2026-10-28T09:35:49+00:00"
         },
         {
             "name": "symfony/polyfill-php84",
@@ -5623,8 +5855,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-23T22:01:09+00:00",
-            "published-time": "2026-09-30T10:23:33+00:00"
+            "time": "2026-09-23T22:01:09+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -5711,8 +5942,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-27T15:39:01+00:00",
-            "published-time": "2026-08-30T19:56:37+00:00"
+            "time": "2026-07-27T15:39:01+00:00"
         },
         {
             "name": "symfony/string",
@@ -5803,8 +6033,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-23T16:51:52+00:00",
-            "published-time": "2026-10-28T18:21:18+00:00"
+            "time": "2026-10-23T16:51:52+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -5854,27 +6083,26 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-17T20:03:58+00:00",
-            "published-time": "2025-11-17T20:04:52+00:00"
+            "time": "2025-11-17T20:03:58+00:00"
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.20.5",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "e447b655502f2058630e6ee03f2ea1c3789fe166"
+                "reference": "c3909231356b5fce30739ff0cf62bf50e6b5e7c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/e447b655502f2058630e6ee03f2ea1c3789fe166",
-                "reference": "e447b655502f2058630e6ee03f2ea1c3789fe166",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/c3909231356b5fce30739ff0cf62bf50e6b5e7c7",
+                "reference": "c3909231356b5fce30739ff0cf62bf50e6b5e7c7",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^3",
                 "amphp/byte-stream": "^2",
-                "amphp/parallel": "^2.3",
+                "amphp/parallel": "^2.4.0",
                 "composer-runtime-api": "^2",
                 "composer/semver": "^1.4 || ^2.0 || ^3.0",
                 "composer/xdebug-handler": "^2.0 || ^3.0",
@@ -5888,10 +6116,16 @@
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
                 "felixfbecker/language-server-protocol": "^1.5.3",
-                "fidry/cpu-core-counter": "^0.4.1 || ^0.5.1 || ^1.0.0",
+                "fidry/cpu-core-counter": "^1.2",
                 "netresearch/jsonmapper": "^5.0",
-                "nikic/php-parser": "^5.2.0",
-                "php": "~8.1.31 || ~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0",
+                "nikic/php-parser": "^5.9",
+                "php-64bit": "~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0 || ~8.6.0",
+                "psalm/plugin-laravel": "^4.17.4",
+                "psalm/plugin-mockery": "^1.3.2",
+                "psalm/plugin-phpunit": "^0.21",
+                "psalm/plugin-sabre-event": "^0.2.1",
+                "psalm/plugin-symfony": "^5.9.1",
+                "psalm/psalm-plugin-api": "0.4.1",
                 "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
                 "spatie/array-to-xml": "^2.17.0 || ^3.0",
                 "symfony/console": "^6.0 || ^7.0 || ^8.0",
@@ -5902,9 +6136,8 @@
                 "psalm/psalm": "self.version"
             },
             "require-dev": {
-                "amphp/phpunit-util": "^3",
                 "bamarni/composer-bin-plugin": "^1.4",
-                "brianium/paratest": "^6.9",
+                "brianium/paratest": "^7.3",
                 "danog/class-finder": "^0.4.8",
                 "dg/bypass-finals": "^1.5",
                 "ext-curl": "*",
@@ -5912,9 +6145,7 @@
                 "nunomaduro/mock-final-classes": "^1.1",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpstan/phpdoc-parser": "^1.6",
-                "phpunit/phpunit": "^9.6",
-                "psalm/plugin-mockery": "^1.1",
-                "psalm/plugin-phpunit": "^0.19",
+                "phpunit/phpunit": "^10.5 || ^11.5 || ^12.5 || ^13.0",
                 "slevomat/coding-standard": "^8.4",
                 "squizlabs/php_codesniffer": "^3.6",
                 "symfony/process": "^6.0 || ^7.0 || ^8.0"
@@ -5973,8 +6204,7 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2026-10-31T16:01:17+00:00",
-            "published-time": "2026-10-31T16:27:05+00:00"
+            "time": "2026-11-03T11:14:30+00:00"
         },
         {
             "name": "webimpress/coding-standard",
@@ -6029,8 +6259,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-16T06:55:17+00:00",
-            "published-time": "2024-10-16T07:39:57+00:00"
+            "time": "2024-10-16T06:55:17+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -6096,8 +6325,7 @@
                 "issues": "https://github.com/webmozarts/assert/issues",
                 "source": "https://github.com/webmozarts/assert/tree/2.5.0"
             },
-            "time": "2026-10-05T23:14:19+00:00",
-            "published-time": "2026-10-05T23:14:25+00:00"
+            "time": "2026-10-05T23:14:19+00:00"
         }
     ],
     "aliases": [],
@@ -6114,5 +6342,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.11.0"
+    "plugin-api-version": "2.9.0"
 }
