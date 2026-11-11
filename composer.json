@@ -45,7 +45,7 @@
         "laminas/internal-tooling": "^1.1.1",
         "laminas/laminas-coding-standard": "^3.1",
         "phpunit/phpunit": "^11.5.57",
-        "psalm/plugin-phpunit": "^0.21.1",
+        "psalm/plugin-phpunit": "^0.22.0",
         "vimeo/psalm": "^7.3.0"
     },
     "autoload": {
