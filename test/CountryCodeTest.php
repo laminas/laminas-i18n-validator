@@ -18,8 +18,6 @@ final class CountryCodeTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->validator = new CountryCodeValidator();
     }
 
@@ -71,7 +69,7 @@ final class CountryCodeTest extends TestCase
 
         self::assertStringContainsString(
             sprintf('"%s"', $value),
-            $messages[CountryCodeValidator::INVALID]
+            (string) $messages[CountryCodeValidator::INVALID]
         );
     }
 
