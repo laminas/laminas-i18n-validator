@@ -18,8 +18,6 @@ final class CountryCodeTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->validator = new CountryCodeValidator();
     }
 

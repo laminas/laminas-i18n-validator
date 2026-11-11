@@ -2,7 +2,7 @@
 # within this `Makefile`.
 
 SHELL=/bin/bash
-PHP_VERSION := 8.2
+PHP_VERSION := 8.3
 I18N_IMAGE_NAME := laminas/i18n-validator
 I18N_IMAGE_ID := $(shell docker images -q ${I18N_IMAGE_NAME} | xargs)
 WORK = /app

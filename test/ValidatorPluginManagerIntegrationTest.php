@@ -33,10 +33,8 @@ final class ValidatorPluginManagerIntegrationTest extends TestCase
             (new ConfigProvider())->__invoke(),
         );
 
-        $dependencies = $config['dependencies'] ?? [];
-        /** @psalm-suppress MixedAssignment */
-        $dependencies['services'] ??= [];
-        self::assertIsArray($dependencies['services']);
+        $dependencies                       = $config['dependencies'] ?? [];
+        $dependencies['services']         ??= [];
         $dependencies['services']['config'] = $config;
 
         /** @psalm-var ServiceManagerConfiguration $dependencies */
