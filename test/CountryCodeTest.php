@@ -69,7 +69,7 @@ final class CountryCodeTest extends TestCase
 
         self::assertStringContainsString(
             sprintf('"%s"', $value),
-            (string) $messages[CountryCodeValidator::INVALID]
+            $messages[CountryCodeValidator::INVALID]
         );
     }
 
